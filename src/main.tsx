@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import './index.scss';
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
 import { router } from "./router";
 import { RouterProvider } from "react-router-dom";
 import { KobbleProvider } from "@kobbleio/react";

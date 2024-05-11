@@ -48,21 +48,15 @@ export const ThreeWrapper = ({
     const lightsArray = lights.map(light => getLight(light))
 
     return (
-        <div>
-            {/* <div
-                onClick={handleSignIn}
+        <div className="three-wrapper__scene">
+            <Canvas
+                shadows
+                className="three-wrapper__canvas"
+                camera={{
+                    position: [-6, 7, 7],
+                }}
             >
-                sign in with google
-            </div> */}
-            <div className="three-wrapper__scene">
-                <Canvas
-                    shadows
-                    className="three-wrapper__canvas"
-                    camera={{
-                        position: [-6, 7, 7],
-                    }}
-                >
-                    {/* 
+                {/* 
                         AmbientLight: illuminates the scene globally, no direction + no shadow
                         DirectionalLight: from a point, seems infinitely far (all rays are parallel)
                         HemisphereLight: above, and fading. No shadows
@@ -70,14 +64,13 @@ export const ThreeWrapper = ({
                         RectAreaLight: light from a rectangle (window)
                         SpotLight: from a single point, in one direction, along a come that increases. For shadows
                     */}
-                    {lightsArray && lightsArray}
-                    <MeshWrapper
-                        geometry={geometry}
-                        material={material}
-                        interaction={interaction}
-                    />
-                </Canvas>
-            </div>
+                {lightsArray && lightsArray}
+                <MeshWrapper
+                    geometry={geometry}
+                    material={material}
+                    interaction={interaction}
+                />
+            </Canvas>
         </div>
     );
 }
