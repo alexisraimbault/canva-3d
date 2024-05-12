@@ -1,5 +1,4 @@
 import { Card } from '../components/Card';
-import { PoweredBy } from "../components/PoweredBy";
 import {
     LoginButton,
     LogoutButton,
@@ -34,14 +33,6 @@ const Home = () => {
 
     return (
         <div className="flex flex-col justify-between items-center w-full">
-            <div className="flex gap-5 flex-col md:flex-row justify-between items-center max-w-full w-[1080px] pt-20 px-10">
-                <div className="rounded-full border border-[#3b3b3b] bg-[#1f1f1f] text-[#fbfbfb] py-3 px-5">
-                    Get started by editing <code className="font-semibold">src/pages/Home.tsx</code>
-                </div>
-                <div>
-                    <PoweredBy />
-                </div>
-            </div>
             <main className="py-20">
                 {/* <span>Available actions:</span> */}
                 <div className="flex items-center gap-2 justify-between mt-5">
