@@ -1,5 +1,5 @@
 import { Card } from '../components/Card';
-import {PoweredBy} from "../components/PoweredBy";
+import { PoweredBy } from "../components/PoweredBy";
 import {
     LoginButton,
     LogoutButton,
@@ -76,25 +76,9 @@ const Home = () => {
                                 <span className="font-semibold">User profile</span>
                                 <pre>{user ? JSON.stringify(user) : 'Not logged in'}</pre>
                             </Card>
-                            {/* <div className={'flex items-center gap-3'}>
-                                <button onClick={getIdToken} className="rounded-full border border-[#236456] bg-[#112220] text-[#33C6AB] py-1 px-3">
-                                    Get Id Token
-                                </button>
-                                <button onClick={getUser} className="rounded-full border border-[#236456] bg-[#112220] text-[#33C6AB] py-1 px-3">
-                                    Get User
-                                </button>
-                                <button onClick={getAccessToken} className="rounded-full border border-[#236456] bg-[#112220] text-[#33C6AB] py-1 px-3">
-                                    Get Access Token
-                                </button>
-                            </div> */}
                         </div>
                     </SignedIn>
                 </div>
-
-                {/* <Card className="overflow-x-scroll w-[500px]">
-                    <span className="font-semibold">Action result</span>
-                    <pre>{JSON.stringify(actionResult)}</pre>
-                </Card> */}
             </main>
         </div>
     );

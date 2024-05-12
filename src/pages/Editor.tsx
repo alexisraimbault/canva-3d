@@ -33,6 +33,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const [materials, setMaterials] = useState([{ ...defaultMaterial }])
     const [interactions, setInteractions] = useState([{ ...defaultInteraction }])
     const [texts, setTexts] = useState([{ ...defaultTexts }])
+    const [customDomain, setCustomDomain] = useState('')
 
     const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
 
@@ -58,6 +59,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
         setMaterials(snapshotData.materials)
         setInteractions(snapshotData.interactions)
         setTexts(snapshotData.texts)
+        setCustomDomain(snapshotData.customDomain)
     }
 
     const onSaveProject = () => {
@@ -76,6 +78,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
             materials,
             interactions,
             texts,
+            customDomain,
         }
 
         const isFirstSave = !projectId
@@ -168,6 +171,8 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         geometry={geometries[editingBlock]}
                         material={materials[editingBlock]}
                         interaction={interactions[editingBlock]}
+                        customDomain={customDomain}
+                        onEditCustomDomain={setCustomDomain}
                         onUpdateGeometries={onUpdateGeometries(editingBlock)}
                         onUpdateMaterials={onUpdateMaterials(editingBlock)}
                         onUpdateInteraction={onUpdateInteraction(editingBlock)}

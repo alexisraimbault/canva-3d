@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import { Editor } from "./pages/Editor";
 import Callback from "./pages/Callback";
 import { Listing } from "./pages/Listing";
+import { Project } from "./pages/Project";
 
 export const router = createBrowserRouter([
     {
@@ -28,5 +29,9 @@ export const router = createBrowserRouter([
     {
         path: "/listing",
         element: <Listing />,
+    },
+    {
+        path: "/project/:projectId",
+        element: <Project />,
     }
 ]);

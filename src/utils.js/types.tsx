@@ -20,9 +20,10 @@ export type ITexts = {
 };
 
 export type IProject = {
-    geometries: IGeometry[],
-    interactions: IInteraction[],
-    lights: ILight[][],
-    materials: IMaterial[],
-    texts: ITexts[],
+    geometries: IGeometry[];
+    interactions: IInteraction[];
+    lights: ILight[][];
+    materials: IMaterial[];
+    texts: ITexts[];
+    customDomain: string;
 }
