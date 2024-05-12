@@ -1,6 +1,5 @@
-import { FC, ReactNode } from "react";
+import { ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
-import React, { useState, useEffect } from 'react';
 
 import { MeshWrapper } from "./MeshWrapper";
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
@@ -22,7 +22,7 @@ type SidebarEditorPropsTypes = {
 };
 
 export const SidebarEditor = ({
-    lights,
+    // lights,
     geometry,
     material,
     interaction,
@@ -33,7 +33,7 @@ export const SidebarEditor = ({
     onUpdateInteraction,
     onUpdateTitle,
     onUpdateSubtitle,
-    onEditCustomDomain
+    // onEditCustomDomain
 }: SidebarEditorPropsTypes) => {
 
     const [isCustomDomainPopupVisible, setIsCustomDomainPopupVisible] = useState(false)

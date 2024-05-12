@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef } from "react";
+import { ReactNode, useRef } from "react";
 
 import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3, Mesh } from 'three'
@@ -27,7 +27,7 @@ export const MeshWrapper = (
         // console.log(mouse.x)
         // console.log(mouse.y)
         if (isTimerInteraction) {
-            const a = clock.getElapsedTime()
+            // const a = clock.getElapsedTime()
             if (meshRef && meshRef.current) {
                 meshRef.current.rotation.x = clock.getElapsedTime()
             }

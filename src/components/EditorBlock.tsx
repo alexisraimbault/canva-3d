@@ -1,6 +1,3 @@
-import { FC } from "react";
-import React, { useState, useEffect } from 'react';
-
 import { ThreeWrapper } from "./ThreeWrapper";
 import { ILight, IGeometry, IInteraction, IMaterial, ITexts } from "../utils.js/types";
 
@@ -21,46 +18,11 @@ export const EditorBlock = ({
     material,
     interaction,
     texts,
-    onUpdateGeometries,
-    onUpdateMaterials,
-    onUpdateInteraction
 }: EditorBlockPropsTypes) => {
     // const [lights, setLights] = useState([{type: 'ambient'}, {type: 'directional'}])
     // const [geometry, setGeometry] = useState({type: 'box'})
     // const [material, setMaterial] = useState({type: 'standard'})
     // const [interaction, setInteraction] = useState({type: 'mouse'})
-
-    const geometries = [
-        'box',
-        'capsule',
-        'dodecahedron',
-        'icosahedron',
-        'octahedron',
-        'sphere',
-        'torus',
-        'torusKnot',
-        'tube',
-        'edges',
-        'wireframe',
-    ]
-
-    const materials = [
-        'basic',
-        'depth',
-        'lambert',
-        'matcap',
-        'normal',
-        'phong',
-        'physical',
-        'standard',
-        'toon',
-    ]
-
-    const interactions = [
-        'mouse',
-        'timer',
-        'scroll'
-    ]
 
     return (
         <div
