@@ -13,6 +13,7 @@ type SidebarEditorPropsTypes = {
     interaction: IMaterial;
     texts: ITexts;
     customDomain: string;
+    projectId: string | null;
     onUpdateGeometries: (g: string) => void;
     onUpdateMaterials: (m: string) => void;
     onUpdateInteraction: (i: string) => void;
@@ -27,6 +28,7 @@ export const SidebarEditor = ({
     material,
     interaction,
     texts,
+    projectId,
     customDomain,
     onUpdateGeometries,
     onUpdateMaterials,
@@ -152,20 +154,41 @@ export const SidebarEditor = ({
         onUpdateInteraction(e.target.value)
     }
 
-    const onAddDomain = () => {
+    const onAddDomain = async () => {
+        const url = 'https://cloud.approximated.app/api/vhosts'
+        const data = {
+            incoming_address: customDomainPopupInputText,
+            target_address: `canva-3d.com/project/${projectId}`,
+            target_ports: "443"
+        }
 
+        const approximatedApiRes = await fetch(url, {
+            method: 'POST',
+            // referrerPolicy: "origin-when-cross-origin"
+            headers: new Headers({
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                // 'Access-Control-Allow-Origin': '*',
+                'api-key': import.meta.env.VITE_DOMAIN_API_KEY
+            }),
+            body: JSON.stringify(data)
+        })
+        console.log({ approximatedApiRes })
+        const response = await approximatedApiRes.json()
+        console.log({ response })
     }
+
 
     return (
         <div className='sidebar-editor__wrapper'>
-            {customDomain && customDomain.length > 0 && (
+            {projectId && customDomain && customDomain.length > 0 && (
                 <div>
                     <div>{"Custom Domain"}</div>
                     <div>{customDomain}</div>
                     <div>{"Edit Custom Domain"}</div>
                 </div>
             )}
-            {(!customDomain || customDomain.length <= 0) && (
+            {projectId && (!customDomain || customDomain.length <= 0) && (
                 <>
                     <div onClick={() => setIsCustomDomainPopupVisible(true)}>{"Add custom Domain"}</div>
                     <Dialog header="Setup Custom Domain" visible={isCustomDomainPopupVisible} style={{ width: '50vw' }} onHide={() => setIsCustomDomainPopupVisible(false)}>

@@ -166,6 +166,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
             <SignedIn>
                 <div className='editor__sidebar-container'>
                     <SidebarEditor
+                        projectId={projectId}
                         texts={texts[editingBlock]}
                         lights={lights[editingBlock]}
                         geometry={geometries[editingBlock]}
