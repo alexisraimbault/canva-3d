@@ -155,6 +155,14 @@ export const SidebarEditor = ({
     }
 
     const onAddDomain = async () => {
+
+        // var xhr = new XMLHttpRequest();
+        // xhr.open("POST", url, true);
+        // xhr.setRequestHeader('Content-Type', 'application/json');
+        // xhr.setRequestHeader('Accept', 'application/json');
+        // xhr.setRequestHeader('api-key', import.meta.env.VITE_DOMAIN_API_KEY);
+        // xhr.send(JSON.stringify(data));
+
         const url = 'https://cloud.approximated.app/api/vhosts'
         const data = {
             incoming_address: customDomainPopupInputText,
@@ -164,13 +172,12 @@ export const SidebarEditor = ({
 
         const approximatedApiRes = await fetch(url, {
             method: 'POST',
-            // referrerPolicy: "origin-when-cross-origin"
-            headers: new Headers({
+            headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                // 'Access-Control-Allow-Origin': '*',
                 'api-key': import.meta.env.VITE_DOMAIN_API_KEY
-            }),
+            },
+            mode: "no-cors",
             body: JSON.stringify(data)
         })
         console.log({ approximatedApiRes })
