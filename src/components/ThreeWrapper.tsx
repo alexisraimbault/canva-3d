@@ -10,6 +10,7 @@ type ITreeWrapperProps = {
     geometry: IGeometry;
     material: IInteraction;
     interaction: IMaterial;
+    mode?: string;
 };
 
 // export const TreeWrapper: FC<ITreeWrapperProps> = (props) => {
@@ -17,7 +18,8 @@ export const ThreeWrapper = ({
     lights = [{ type: 'ambient' }, { type: 'directional' }],
     geometry = { type: 'box' },
     material = { type: 'standard' },
-    interaction = { type: 'mouse' }
+    interaction = { type: 'mouse' },
+    mode
 }: ITreeWrapperProps) => {
     // const {user, googleSignIn, logOut} = UserAuth()
 
@@ -28,6 +30,7 @@ export const ThreeWrapper = ({
     //         console.log(error)
     //     }
     // }
+    const isSmallMode = mode === "small"
 
     const getLight = (light: ILight) => {
         const ligtsTypeMap: {
@@ -47,7 +50,7 @@ export const ThreeWrapper = ({
     const lightsArray = lights.map(light => getLight(light))
 
     return (
-        <div className="three-wrapper__scene">
+        <div className={`three-wrapper__scene${isSmallMode ? ' three-wrapper__scene--small' : ''}`}>
             <Canvas
                 shadows
                 className="three-wrapper__canvas"

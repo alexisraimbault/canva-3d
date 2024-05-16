@@ -1,32 +1,95 @@
 // @tailwind base;
 // @tailwind components;
 // @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Caprasimo&family=Poppins:wght@600&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-* {
-  box-sizing: content-box;
+// Colors
+$darkColor: #1f1f1f;
+$lightColor: #E3E3E3;
+$accentColor: #B3FE3B;
+$secondaryColor1: #FC1EFF;
+$secondaryColor2: #FFFE01;
+$secondaryColor3: #01FFFF;
+
+// PrimeReact overrides
+.p-button {
+  background-color: $lightColor;
+  color: $darkColor;
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  &:hover {
+    background-color: $accentColor;
+  }
 }
 
-body {
-  color: #f2f2f2;
-  min-height: 100vh;
+// .p-dropdown:not(.p-disabled):hover {
+//   border-color: $accentColor;
+// }
+
+// .p-dropdown:not(.p-disabled).p-focus {
+//   box-shadow: 0 0 0 0.2rem rgba($accentColor, 0.1);
+//   border-color: $accentColor;
+// }
+
+.quantico-regular {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.quantico-bold {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.quantico-regular-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.quantico-bold-italic {
+  font-family: "Quantico", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "violet_sansregular";
+  src: url("./assets/fonts/violetsans-regular-webfont.ttf");
+  font-weight: 400;
+}
+
+* {
+  font-family: "Quantico", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  box-sizing: content-box;
+  // transition: all 0.5s;
   transition:
     color 0.5s,
     background-color 0.5s;
+}
+
+body {
   line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
+  // font-family:
+  //   Inter,
+  //   -apple-system,
+  //   BlinkMacSystemFont,
+  //   'Segoe UI',
+  //   Roboto,
+  //   Oxygen,
+  //   Ubuntu,
+  //   Cantarell,
+  //   'Fira Sans',
+  //   'Droid Sans',
+  //   'Helvetica Neue',
+  //   sans-serif;
+  // font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -35,24 +98,42 @@ body {
 
 body {
   min-height: 100vh;
-  background: url("./assets/img/bg-frame.svg") no-repeat center center;
-  background-size: cover;
+  color: $lightColor;
+  background-color: $darkColor;
+  // transition:
+  //   color 0.5s,
+  //   background-color 0.5s;
+  // background: url("./assets/img/bg-frame.svg") no-repeat center center;
+  // background-size: cover;
 }
 
-.three-wrapper {
-  &__scene {
-    width: 100vw;
-    height: 100vh;
+.custom {
+  &__title {
+    font-family: "Quantico", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 26px;
+    margin-bottom: 16px;
+    color: $accentColor;
+  }
+}
+
+.pagination-sidebar {
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: scroll;
   }
 
-  &__canvas {
-    background: #000;
+  &__items {
+    margin-bottom: 24px;
   }
 }
 
 .editor {
   &__wrapper {
-    // display: flex;
+    background-color: $lightColor;
   }
 
   &__sidebar-container {
@@ -61,13 +142,27 @@ body {
     width: 200px;
     display: flex;
     flex-direction: column;
-    background-color: rgba($color: bisque, $alpha: 0.5);
+    background-color: $darkColor;
     border-radius: 0 20px 20px 0;
+    height: calc(100vh - 40px);
+  }
+
+  &__pagination-sidebar-container {
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    padding: 20px 0;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    background-color: $darkColor;
+    border-radius: 20px 0 0 20px;
     height: calc(100vh - 40px);
   }
 
   &__feed-container {
     margin-left: 240px;
+    margin-right: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,10 +190,15 @@ body {
     align-items: center;
     // 280 = sidebar + paddings
     max-width: calc(100vw - 280px - 24px);
-    background-color: white;
+    background-color: $darkColor;
     padding: 12px;
     border-radius: 20px;
-    margin-bottom: 24px;
+
+    &--small {
+      background-color: $darkColor;
+      padding: 0;
+      border-radius: 0;
+    }
   }
 
   &__texts-wrapper {
@@ -108,24 +208,64 @@ body {
     align-items: center;
     text-align: center;
     // addition of the paddings on wrapper elements
-    padding: 32px calc(20px + 12px)
+    padding: 32px calc(20px + 12px);
+
+    &--small {
+      padding: 4px;
+    }
   }
 
   &__title {
     font-size: 42px;
     margin-bottom: 32px;
+
+    &--small {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
   }
 
   &__subtitle {
     font-size: 22px;
+
+    &--small {
+      font-size: 7px;
+    }
   }
 }
 
 .three-wrapper {
   &__scene {
-    max-width: calc(100vw - 280px - 24px);
+    width: 100vw;
+    height: calc(100vh - 24px - 40px);
+    max-width: calc(100vw - 280px - 24px - 200px);
     border-radius: 20px;
     overflow: hidden;
+
+    &--small {
+      max-width: 200px;
+      height: 100px;
+      border-radius: 0px;
+      cursor: pointer;
+
+      .three-wrapper {
+        &__canvas {
+          background: $darkColor;
+        }
+      }
+
+      &:hover {
+        .three-wrapper {
+          &__canvas {
+            background: white;
+          }
+        }
+      }
+    }
+  }
+
+  &__canvas {
+    background: $darkColor;
   }
 }
 
@@ -137,5 +277,74 @@ body {
   &__wrapper {
     display: flex;
     flex-direction: column;
+  }
+}
+
+.listing {
+  &__projects-container {
+    display: flex;
+    margin-bottom: 32px;
+  }
+}
+
+.fullpage-wrapper {
+  padding: 20px 40px;
+}
+
+.homepage {
+  &__btns-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .p-button {
+      margin: 0px 12px;
+    }
+  }
+}
+
+.card {
+  &__wrapper {
+    display: flex;
+    padding: 12px 16px;
+    border: solid 2px $lightColor;
+
+    &--clickable {
+      cursor: pointer;
+
+      &:hover {
+        border: solid 2px $accentColor;
+      }
+    }
+  }
+}
+
+.custom-button {
+  &__btn {
+    color: $darkColor;
+    cursor: pointer;
+    border: none;
+    font-size: 20px;
+    padding: 16px 32px;
+    background-image: linear-gradient(to bottom left, transparent 50%, $lightColor 50%), linear-gradient($lightColor, $lightColor), linear-gradient($lightColor, $lightColor);
+    background-size: 25px 25px, 100% 100%, 100% 100%;
+    background-position: 100% 0%, -25px 0%, 100% 25px;
+    background-repeat: no-repeat;
+
+    background-image: linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient(to bottom left, transparent calc(30% - 1px), $darkColor calc(30% - 1px), $darkColor calc(30% + 1px), $lightColor calc(30% + 1px)), linear-gradient($lightColor, $lightColor), linear-gradient($lightColor, $lightColor);
+    background-size: 2px 100%, 2px 100%, 100% 2px, 100% 2px, 25px 25px, 100% 100%, 100% 100%;
+    background-position: 0% 0%, 100% 13px, -13px 0%, 0px 100%, 100% 0%, -25px 0%, 100% 25px;
+  }
+
+  &__btn:hover {
+    color: $lightColor;
+    background-image: linear-gradient(to bottom left, transparent 50%, $darkColor 50%), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor);
+    background-size: 25px 25px, 100% 100%, 100% 100%;
+    background-position: 100% 0%, -25px 0%, 100% 25px;
+    background-repeat: no-repeat;
+
+    background-image: linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient(to bottom left, transparent calc(30% - 1px), $darkColor calc(30% - 1px), $darkColor calc(30% + 1px), $darkColor calc(30% + 1px)), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor);
+    background-size: 2px 100%, 2px 100%, 100% 2px, 100% 2px, 25px 25px, 100% 100%, 100% 100%;
+    background-position: 0% 0%, 100% 13px, -13px 0%, 0px 100%, 100% 0%, -25px 0%, 100% 25px;
   }
 }

@@ -1,6 +1,7 @@
 import {
     LoginButton,
 } from "@kobbleio/react";
+import { Button } from 'primereact/button';
 
 type ILoggedOutDisplayProps = {};
 
@@ -9,9 +10,9 @@ export const LoggedOutDisplay = ({ }: ILoggedOutDisplayProps) => {
         <div className="flex items-center gap-2">
             <div>{"You need to log in to access this page"}</div>
             <LoginButton>
-                <button className="rounded-full border border-[#236456] bg-[#112220] text-[#33C6AB] py-1 px-3">
-                    Login
-                </button>
+                <Button
+                    label='Login'
+                />
             </LoginButton>
         </div>
     );

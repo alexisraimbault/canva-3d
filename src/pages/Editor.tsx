@@ -7,10 +7,12 @@ import {
 import { ref, push, set, get } from "firebase/database";
 import { useParams } from 'react-router-dom'
 // import { getAnalytics, setUserId } from "firebase/analytics";
+// import { Button } from 'primereact/button';
 
 import { EditorBlock } from "../components/EditorBlock";
 import { SidebarEditor } from '../components/SidebarEditor';
 import { LoggedOutDisplay } from '../components/LoggedOutDisplay';
+import { PaginationSidebar } from '../components/PaginationSidebar';
 
 import { ITexts, ILight, IGeometry, IMaterial, IInteraction } from "../utils.js/types";
 import { database } from '../utils.js/firebase';
@@ -37,6 +39,8 @@ export const Editor = ({ }: EditorPropsTypes) => {
 
     const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
 
+    const [hasLoaded, setHasLoaded] = useState(urlProjectId ? true : false)
+
     useEffect(() => {
         fetchInitialData()
 
@@ -60,7 +64,16 @@ export const Editor = ({ }: EditorPropsTypes) => {
         setInteractions(snapshotData.interactions)
         setTexts(snapshotData.texts)
         setCustomDomain(snapshotData.customDomain)
+        setHasLoaded(true)
     }
+
+    useEffect(() => {
+        if (!hasLoaded) {
+            return
+        }
+
+        onSaveProject()
+    }, [hasLoaded, lights, geometries, materials, interactions, texts, customDomain])
 
     const onSaveProject = () => {
         if (!user) {
@@ -182,32 +195,25 @@ export const Editor = ({ }: EditorPropsTypes) => {
                     />
                 </div>
                 <div className='editor__feed-container'>
-                    {geometries.map((_geometry, geometryIdx) => (
-                        <div
-                            onClick={() => setEditingBlock(geometryIdx)}
-                        >
-                            <EditorBlock
-                                texts={texts[geometryIdx]}
-                                lights={lights[geometryIdx]}
-                                geometry={geometries[geometryIdx]}
-                                material={materials[geometryIdx]}
-                                interaction={interactions[geometryIdx]}
-                                onUpdateGeometries={onUpdateGeometries(geometryIdx)}
-                                onUpdateMaterials={onUpdateMaterials(geometryIdx)}
-                                onUpdateInteraction={onUpdateInteraction(geometryIdx)}
-                            />
-                        </div>
-                    ))}
-                    <div
-                        onClick={() => onAddBlock(undefined)}
-                    >
-                        Add a block
-                    </div>
-                    <div
-                        onClick={onSaveProject}
-                    >
-                        {"Save"}
-                    </div>
+                    <EditorBlock
+                        texts={texts[editingBlock]}
+                        lights={lights[editingBlock]}
+                        geometry={geometries[editingBlock]}
+                        material={materials[editingBlock]}
+                        interaction={interactions[editingBlock]}
+                    />
+                </div>
+                <div className='editor__pagination-sidebar-container'>
+                    <PaginationSidebar
+                        lights={lights}
+                        geometries={geometries}
+                        materials={materials}
+                        interactions={interactions}
+                        texts={texts}
+                        editingBlock={editingBlock}
+                        setEditingBlock={setEditingBlock}
+                        onAddBlock={onAddBlock}
+                    />
                 </div>
             </SignedIn>
         </div>

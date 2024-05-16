@@ -6,7 +6,9 @@ import {
 } from "@kobbleio/react";
 import { ref, get } from "firebase/database";
 import { useNavigate } from "react-router-dom";
+import { Button } from 'primereact/button';
 
+import { Card } from "../components/Card";
 import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
 
 import { database } from '../utils.js/firebase';
@@ -47,30 +49,31 @@ export const Listing = ({ }: IListingProps) => {
     }
 
     return (
-        <div className='listing__wrapper'>
+        <div className='listing__wrapper fullpage-wrapper'>
             <SignedOut>
                 <LoggedOutDisplay />
             </SignedOut>
             <SignedIn>
                 <>
-                    {projects && Object.keys(projects).map(key => {
+                    <div className="custom__title">{"Projects"}</div>
+                    <div className="listing__projects-container">
+                        {projects && Object.keys(projects).map(key => {
 
-                        const projectData = projects[key]
-                        console.log({ projectData })
-                        return (
-                            <div
-                                key={`lp-${key}`}
-                                onClick={() => onEditProject(key)}
-                            >
-                                {key}
-                            </div>
-                        )
-                    })}
-                    <div
-                        onClick={onAddProject}
-                    >
-                        Add a Project
+                            // const projectData = projects[key]
+                            return (
+                                <Card
+                                    key={`lp-${key}`}
+                                    onClick={() => onEditProject(key)}
+                                >
+                                    {key}
+                                </Card>
+                            )
+                        })}
                     </div>
+                    <Button
+                        onClick={onAddProject}
+                        label='Add a Project'
+                    />
                 </>
             </SignedIn>
         </div>
