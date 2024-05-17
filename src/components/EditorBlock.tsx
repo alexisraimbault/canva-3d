@@ -1,4 +1,7 @@
+import { Button } from 'primereact/button';
+
 import { ThreeWrapper } from "./ThreeWrapper";
+
 import { ILight, IGeometry, IInteraction, IMaterial, ITexts } from "../utils.js/types";
 
 type EditorBlockPropsTypes = {
@@ -8,6 +11,7 @@ type EditorBlockPropsTypes = {
     interaction: IMaterial;
     texts: ITexts;
     mode?: string;
+    openEmailPopup?: () => void;
 };
 
 export const EditorBlock = ({
@@ -17,6 +21,7 @@ export const EditorBlock = ({
     interaction,
     texts,
     mode,
+    openEmailPopup,
 }: EditorBlockPropsTypes) => {
     const isSmallMode = mode === "small"
 
@@ -37,6 +42,14 @@ export const EditorBlock = ({
                 <div className={`editor-block__texts-wrapper${isSmallMode ? ' editor-block__texts-wrapper--small' : ''}`}>
                     {texts?.title?.length > 0 && <div className={`editor-block__title${isSmallMode ? ' editor-block__title--small' : ''}`}>{texts.title}</div>}
                     {texts?.subtitle?.length > 0 && <div className={`editor-block__subtitle${isSmallMode ? ' editor-block__subtitle--small' : ''}`}>{texts.subtitle}</div>}
+                </div>
+            )}
+            {!isSmallMode && texts?.CTALabel?.length > 0 && (
+                <div className={`editor-block__cta-container${isSmallMode ? ' editor-block__cta-container--small' : ''}`}>
+                    <Button
+                        label={texts.CTALabel}
+                        onClick={openEmailPopup}
+                    />
                 </div>
             )}
         </div>

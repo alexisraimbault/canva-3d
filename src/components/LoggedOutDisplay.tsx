@@ -7,7 +7,7 @@ type ILoggedOutDisplayProps = {};
 
 export const LoggedOutDisplay = ({ }: ILoggedOutDisplayProps) => {
     return (
-        <div className="flex items-center gap-2">
+        <div className="logged-out__wrapper">
             <div>{"You need to log in to access this page"}</div>
             <LoginButton>
                 <Button

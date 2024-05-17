@@ -24,6 +24,10 @@ $secondaryColor3: #01FFFF;
   }
 }
 
+.p-dialog-content {
+  overflow: visible;
+}
+
 // .p-dropdown:not(.p-disabled):hover {
 //   border-color: $accentColor;
 // }
@@ -171,6 +175,37 @@ body {
     // height: calc(100vh - 40px);
     // overflow: scroll;
   }
+
+  &__email-popup-content {
+    margin-top: -80px;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__email-popup-inner {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__email-popup-title {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  &__email-popup-text {
+    font-size: 20px;
+    margin-bottom: 28px;
+  }
+
+  &__email-popup-input {
+    margin-bottom: 12px;
+    width: 100%;
+  }
 }
 
 .editor-block {
@@ -213,6 +248,15 @@ body {
     &--small {
       padding: 4px;
     }
+  }
+
+  &__cta-container {
+    position: absolute;
+    bottom: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   &__title {
@@ -346,5 +390,11 @@ body {
     background-image: linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient(to bottom left, transparent calc(30% - 1px), $darkColor calc(30% - 1px), $darkColor calc(30% + 1px), $darkColor calc(30% + 1px)), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor);
     background-size: 2px 100%, 2px 100%, 100% 2px, 100% 2px, 25px 25px, 100% 100%, 100% 100%;
     background-position: 0% 0%, 100% 13px, -13px 0%, 0px 100%, 100% 0%, -25px 0%, 100% 25px;
+  }
+}
+
+.logged-out {
+  &__wrapper {
+    background-color: $darkColor;
   }
 }

@@ -17,6 +17,7 @@ export type IInteraction = {
 export type ITexts = {
     title: string;
     subtitle: string;
+    CTALabel: string;
 };
 
 export type IProject = {

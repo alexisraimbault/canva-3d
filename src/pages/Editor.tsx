@@ -6,8 +6,10 @@ import {
 } from "@kobbleio/react";
 import { ref, push, set, get } from "firebase/database";
 import { useParams } from 'react-router-dom'
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 // import { getAnalytics, setUserId } from "firebase/analytics";
-// import { Button } from 'primereact/button';
 
 import { EditorBlock } from "../components/EditorBlock";
 import { SidebarEditor } from '../components/SidebarEditor';
@@ -27,7 +29,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const defaultGeometry: IGeometry = { type: 'box' }
     const defaultMaterial: IMaterial = { type: 'standard' }
     const defaultInteraction: IInteraction = { type: 'mouse' }
-    const defaultTexts: ITexts = { title: '', subtitle: '' }
+    const defaultTexts: ITexts = { title: '', subtitle: '', CTALabel: '' }
 
     const [editingBlock, setEditingBlock] = useState(0)
     const [lights, setLights] = useState([[...defaultLight]])
@@ -39,7 +41,10 @@ export const Editor = ({ }: EditorPropsTypes) => {
 
     const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
 
-    const [hasLoaded, setHasLoaded] = useState(urlProjectId ? true : false)
+    const [hasLoaded, setHasLoaded] = useState(urlProjectId ? false : true)
+
+    const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
+    const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
 
     useEffect(() => {
         fetchInitialData()
@@ -58,12 +63,12 @@ export const Editor = ({ }: EditorPropsTypes) => {
         const projectRef = ref(database, `users/${userId}/projects/${urlProjectId}`)
         const snapshot = await get(projectRef)
         const snapshotData = snapshot.val()
-        setLights(snapshotData.lights)
-        setGeometries(snapshotData.geometries)
-        setMaterials(snapshotData.materials)
-        setInteractions(snapshotData.interactions)
-        setTexts(snapshotData.texts)
-        setCustomDomain(snapshotData.customDomain)
+        setLights(snapshotData?.lights || [...defaultLight])
+        setGeometries(snapshotData?.geometries || [{ ...defaultGeometry }])
+        setMaterials(snapshotData?.materials || [{ ...defaultMaterial }])
+        setInteractions(snapshotData?.interactions || [{ ...defaultInteraction }])
+        setTexts(snapshotData?.texts || [{ ...defaultTexts }])
+        setCustomDomain(snapshotData?.customDomain || '')
         setHasLoaded(true)
     }
 
@@ -107,6 +112,19 @@ export const Editor = ({ }: EditorPropsTypes) => {
         }
     }
 
+    const onAddEmail = () => {
+        if (!projectId || !emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
+            return
+        }
+
+        pushEmailToProject(emailGatherPopupInputText, projectId)
+    }
+
+    const pushEmailToProject = (email: string, projectId: string) => {
+        const projectEmailRef = ref(database, `emails/${projectId}/list/${email}`)
+        set(projectEmailRef, true)
+    }
+
     const onUpdateGeometries = (idx: number) => (g: string) => {
         const newGeometries = [...geometries]
         newGeometries[idx] = { type: g }
@@ -135,6 +153,12 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const onUpdateSubtitle = (idx: number) => (textContent: string) => {
         const newTexts = [...texts]
         newTexts[idx].subtitle = textContent
+        setTexts(newTexts)
+    }
+
+    const onUpdateCTALabel = (idx: number) => (textContent: string) => {
+        const newTexts = [...texts]
+        newTexts[idx].CTALabel = textContent
         setTexts(newTexts)
     }
 
@@ -192,6 +216,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         onUpdateInteraction={onUpdateInteraction(editingBlock)}
                         onUpdateTitle={onUpdateTitle(editingBlock)}
                         onUpdateSubtitle={onUpdateSubtitle(editingBlock)}
+                        onUpdateCTALabel={onUpdateCTALabel(editingBlock)}
                     />
                 </div>
                 <div className='editor__feed-container'>
@@ -201,6 +226,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         geometry={geometries[editingBlock]}
                         material={materials[editingBlock]}
                         interaction={interactions[editingBlock]}
+                        openEmailPopup={() => setIsEmailGatherPopupVisible(true)}
                     />
                 </div>
                 <div className='editor__pagination-sidebar-container'>
@@ -215,6 +241,29 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         onAddBlock={onAddBlock}
                     />
                 </div>
+                <Dialog
+                    header={null}
+                    visible={isEmailGatherPopupVisible}
+                    style={{ width: '600px' }}
+                    onHide={() => setIsEmailGatherPopupVisible(false)}
+                >
+                    <div className='editor__email-popup-content'>
+                        <div className='editor__email-popup-inner'>
+                            <div className='quantico-bold editor__email-popup-title'>{texts[editingBlock].CTALabel}</div>
+                            <div className='editor__email-popup-text'>{"Enter your email to receive a private access link"}</div>
+                            <InputText
+                                value={emailGatherPopupInputText || ''}
+                                onChange={(e) => setEmailGatherPopupInputText(e.target.value)}
+                                placeholder="Email"
+                                className='editor__email-popup-input'
+                            />
+                            <Button
+                                label="Register"
+                                onClick={onAddEmail}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
             </SignedIn>
         </div>
     );
