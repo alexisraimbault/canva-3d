@@ -13,7 +13,6 @@ type ITreeWrapperProps = {
     mode?: string;
 };
 
-// export const TreeWrapper: FC<ITreeWrapperProps> = (props) => {
 export const ThreeWrapper = ({
     lights = [{ type: 'ambient' }, { type: 'directional' }],
     geometry = { type: 'box' },
@@ -21,24 +20,31 @@ export const ThreeWrapper = ({
     interaction = { type: 'mouse' },
     mode
 }: ITreeWrapperProps) => {
-    // const {user, googleSignIn, logOut} = UserAuth()
-
-    // const handleSignIn = async () => {
-    //     try{
-    //         await googleSignIn()
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
     const isSmallMode = mode === "small"
 
     const getLight = (light: ILight) => {
         const ligtsTypeMap: {
             [id: string]: ReactNode
         } = {
-            ambient: <ambientLight intensity={0.1} />,
-            directional: <directionalLight position={[5, 5, 1]} />,
-            hemisphere: <hemisphereLight />,
+            ambient: (
+                <ambientLight
+                    intensity={1}
+                    color='#FC1EFF'
+                />),
+            directional: (
+                <directionalLight
+                    position={[5, 3, 1]}
+                // color='#FC1EFF'
+                />
+            ),
+            hemisphere: (
+                <hemisphereLight
+                    color={'#FC1EFF'}
+                    // position={[5, 5, 5]}
+                    // groundColor={}
+                    intensity={1}
+                />
+            ),
             point: <pointLight />,
             rect: <rectAreaLight />,
             spot: <spotLight />

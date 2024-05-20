@@ -24,10 +24,14 @@ export const EditorBlock = ({
     openEmailPopup,
 }: EditorBlockPropsTypes) => {
     const isSmallMode = mode === "small"
+    const isFullMode = mode === "full"
 
     return (
         <div
-            className={`editor-block__wrapper${isSmallMode ? ' editor-block__wrapper--small' : ''}`}
+            className={`editor-block__wrapper
+                ${isSmallMode ? ' editor-block__wrapper--small' : ''}
+                ${isFullMode ? ' editor-block__wrapper--full' : ''}
+            `}
         >
             <div className="editor-block__scene-wrapper">
                 <ThreeWrapper
@@ -39,13 +43,38 @@ export const EditorBlock = ({
                 />
             </div>
             {(texts?.title?.length > 0 || texts?.subtitle?.length > 0) && (
-                <div className={`editor-block__texts-wrapper${isSmallMode ? ' editor-block__texts-wrapper--small' : ''}`}>
-                    {texts?.title?.length > 0 && <div className={`editor-block__title${isSmallMode ? ' editor-block__title--small' : ''}`}>{texts.title}</div>}
-                    {texts?.subtitle?.length > 0 && <div className={`editor-block__subtitle${isSmallMode ? ' editor-block__subtitle--small' : ''}`}>{texts.subtitle}</div>}
+                <div
+                    className={`editor-block__texts-wrapper
+                        ${isSmallMode ? ' editor-block__texts-wrapper--small' : ''}
+                        ${isFullMode ? ' editor-block__texts-wrapper--full' : ''}
+                    `}
+                >
+                    {texts?.title?.length > 0 && (
+                        <div
+                            className={`editor-block__title
+                                ${isSmallMode ? ' editor-block__title--small' : ''}
+                                ${isFullMode ? ' editor-block__title--full' : ''}
+                            `}>
+                            {texts.title}
+                        </div>
+                    )}
+                    {texts?.subtitle?.length > 0 && (
+                        <div
+                            className={`editor-block__subtitle
+                                ${isSmallMode ? ' editor-block__subtitle--small' : ''}
+                                ${isFullMode ? ' editor-block__subtitle--full' : ''}
+                            `}>
+                            {texts.subtitle}
+                        </div>
+                    )}
                 </div>
             )}
             {!isSmallMode && texts?.CTALabel?.length > 0 && (
-                <div className={`editor-block__cta-container${isSmallMode ? ' editor-block__cta-container--small' : ''}`}>
+                <div
+                    className={`editor-block__cta-container
+                        ${isSmallMode ? ' editor-block__cta-container--small' : ''}
+                        ${isFullMode ? ' editor-block__cta-container--full' : ''}
+                    `}>
                     <Button
                         label={texts.CTALabel}
                         onClick={openEmailPopup}

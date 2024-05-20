@@ -20,6 +20,12 @@ export type ITexts = {
     CTALabel: string;
 };
 
+export type IPublishStatus = {
+    name: string;
+    published: boolean;
+    publishTime: number | null;
+};
+
 export type IProject = {
     geometries: IGeometry[];
     interactions: IInteraction[];
@@ -27,4 +33,5 @@ export type IProject = {
     materials: IMaterial[];
     texts: ITexts[];
     customDomain: string;
+    publishData: IPublishStatus;
 }

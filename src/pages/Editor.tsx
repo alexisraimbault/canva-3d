@@ -16,7 +16,7 @@ import { SidebarEditor } from '../components/SidebarEditor';
 import { LoggedOutDisplay } from '../components/LoggedOutDisplay';
 import { PaginationSidebar } from '../components/PaginationSidebar';
 
-import { ITexts, ILight, IGeometry, IMaterial, IInteraction } from "../utils.js/types";
+import { ITexts, ILight, IGeometry, IMaterial, IInteraction, IPublishStatus } from "../utils.js/types";
 import { database } from '../utils.js/firebase';
 
 type EditorPropsTypes = {};
@@ -25,11 +25,13 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const { user } = useAuth();
     const { projectId: urlProjectId } = useParams()
 
-    const defaultLight: ILight[] = [{ type: 'ambient' }, { type: 'directional' }]
+    // const defaultLight: ILight[] = [{ type: 'ambient' }, { type: 'directional' }]
+    const defaultLight: ILight[] = [{ type: 'hemisphere' }]
     const defaultGeometry: IGeometry = { type: 'box' }
     const defaultMaterial: IMaterial = { type: 'standard' }
     const defaultInteraction: IInteraction = { type: 'mouse' }
     const defaultTexts: ITexts = { title: '', subtitle: '', CTALabel: '' }
+    const defaultPublishStatus: IPublishStatus = { name: '', published: false, publishTime: null }
 
     const [editingBlock, setEditingBlock] = useState(0)
     const [lights, setLights] = useState([[...defaultLight]])
@@ -38,6 +40,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const [interactions, setInteractions] = useState([{ ...defaultInteraction }])
     const [texts, setTexts] = useState([{ ...defaultTexts }])
     const [customDomain, setCustomDomain] = useState('')
+    const [projectPublishData, setProjectPublishData] = useState(defaultPublishStatus)
 
     const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
 
@@ -45,6 +48,22 @@ export const Editor = ({ }: EditorPropsTypes) => {
 
     const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
     const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
+
+    const [isProjectPublishPopupVisible, setIsProjectPublishPopupVisible] = useState(false)
+
+    const updatePublishName = (newName: string) => {
+        const newPublishData = { ...projectPublishData }
+        newPublishData.name = newName
+        setProjectPublishData(newPublishData)
+    }
+
+    const onPublish = () => {
+        const newPublishData = { ...projectPublishData }
+        newPublishData.published = true
+        newPublishData.publishTime = Date.now()
+        setProjectPublishData(newPublishData)
+        setIsProjectPublishPopupVisible(false)
+    }
 
     useEffect(() => {
         fetchInitialData()
@@ -69,6 +88,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
         setInteractions(snapshotData?.interactions || [{ ...defaultInteraction }])
         setTexts(snapshotData?.texts || [{ ...defaultTexts }])
         setCustomDomain(snapshotData?.customDomain || '')
+        setProjectPublishData(snapshotData?.publishData || defaultPublishStatus)
         setHasLoaded(true)
     }
 
@@ -78,7 +98,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
         }
 
         onSaveProject()
-    }, [hasLoaded, lights, geometries, materials, interactions, texts, customDomain])
+    }, [hasLoaded, lights, geometries, materials, interactions, texts, customDomain, projectPublishData])
 
     const onSaveProject = () => {
         if (!user) {
@@ -97,6 +117,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
             interactions,
             texts,
             customDomain,
+            publishData: projectPublishData,
         }
 
         const isFirstSave = !projectId
@@ -121,8 +142,17 @@ export const Editor = ({ }: EditorPropsTypes) => {
     }
 
     const pushEmailToProject = (email: string, projectId: string) => {
-        const projectEmailRef = ref(database, `emails/${projectId}/list/${email}`)
-        set(projectEmailRef, true)
+        if (!user) {
+            return
+        }
+
+        const userId = user.id
+        const projectEmailRef = ref(database, `emails/${userId}/${projectId}/list`)
+        const emailData = {
+            email,
+            createdAt: Date.now(),
+        }
+        push(projectEmailRef, emailData);
     }
 
     const onUpdateGeometries = (idx: number) => (g: string) => {
@@ -239,8 +269,32 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         editingBlock={editingBlock}
                         setEditingBlock={setEditingBlock}
                         onAddBlock={onAddBlock}
+                        userId={user?.id}
+                        projectId={projectId}
+                        projectPublishName={projectPublishData.name}
+                        onPublishClick={() => setIsProjectPublishPopupVisible(true)}
                     />
                 </div>
+                <Dialog
+                    header={"Publish project"}
+                    visible={isProjectPublishPopupVisible}
+                    style={{ width: '600px' }}
+                    onHide={() => setIsProjectPublishPopupVisible(false)}
+                >
+                    <div className='editor__publish-popup-content'>
+                        <div className='editor__publish-popup-text'>{"Enter your Project name (visible in url). Only use numbers and letters."}</div>
+                        <InputText
+                            value={projectPublishData.name || ''}
+                            onChange={(e) => updatePublishName(e.target.value)}
+                            placeholder="Project name"
+                            className='editor__publish-popup-input'
+                        />
+                        <Button
+                            label="Publish"
+                            onClick={onPublish}
+                        />
+                    </div>
+                </Dialog>
                 <Dialog
                     header={null}
                     visible={isEmailGatherPopupVisible}

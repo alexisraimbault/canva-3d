@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
         element: <Listing />,
     },
     {
-        path: "/project/:projectId",
+        path: "/project/:userId/:projectId",
         element: <Project />,
     }
 ]);

@@ -10,6 +10,7 @@ import { Button } from 'primereact/button';
 
 import { Card } from "../components/Card";
 import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
+import { EditorBlock } from "../components/EditorBlock";
 
 import { database } from '../utils.js/firebase';
 import { IProject } from "../utils.js/types";
@@ -59,13 +60,27 @@ export const Listing = ({ }: IListingProps) => {
                     <div className="listing__projects-container">
                         {projects && Object.keys(projects).map(key => {
 
-                            // const projectData = projects[key]
+                            const projectData = projects[key]
+                            const nbBlocks = projectData?.geometries?.length || 0
                             return (
                                 <Card
                                     key={`lp-${key}`}
+                                    className="listing__card-container"
                                     onClick={() => onEditProject(key)}
                                 >
-                                    {key}
+                                    <div>
+                                        {`${nbBlocks} Blocks`}
+                                    </div>
+                                    {nbBlocks > 0 && (
+                                        <EditorBlock
+                                            texts={projectData.texts[0]}
+                                            lights={projectData.lights[0]}
+                                            geometry={projectData.geometries[0]}
+                                            material={projectData.materials[0]}
+                                            interaction={projectData.interactions[0]}
+                                            mode="small"
+                                        />
+                                    )}
                                 </Card>
                             )
                         })}

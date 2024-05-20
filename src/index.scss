@@ -208,6 +208,40 @@ body {
   }
 }
 
+.project-view {
+
+  &__email-popup-content {
+    margin-top: -80px;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__email-popup-inner {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__email-popup-title {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  &__email-popup-text {
+    font-size: 20px;
+    margin-bottom: 28px;
+  }
+
+  &__email-popup-input {
+    margin-bottom: 12px;
+    width: 100%;
+  }
+}
+
 .editor-block {
   &__selection-item {
     display: flex;
@@ -220,6 +254,7 @@ body {
   }
 
   &__wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -234,6 +269,14 @@ body {
       padding: 0;
       border-radius: 0;
     }
+
+    &--full {
+      max-width: 100vw;
+      width: 100vw;
+      background-color: $darkColor;
+      padding: 0;
+      border-radius: 0;
+    }
   }
 
   &__texts-wrapper {
@@ -244,9 +287,14 @@ body {
     text-align: center;
     // addition of the paddings on wrapper elements
     padding: 32px calc(20px + 12px);
+    max-width: 80%;
 
     &--small {
       padding: 4px;
+    }
+
+    &--full {
+      margin: 64px 40px;
     }
   }
 
@@ -257,6 +305,10 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
+
+    &--full {
+      bottom: 80px;
+    }
   }
 
   &__title {
@@ -327,7 +379,14 @@ body {
 .listing {
   &__projects-container {
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 32px;
+  }
+
+  &__card-container {
+    margin: 0 12px 12px 0;
+    display: flex;
+    flex-direction: column;
   }
 }
 
