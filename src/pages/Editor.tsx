@@ -49,6 +49,8 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
     const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
 
+    const [isNameAlreadyTaken, setIsNameAlreadyTaken] = useState(false)
+
     const [isProjectPublishPopupVisible, setIsProjectPublishPopupVisible] = useState(false)
 
     const updatePublishName = (newName: string) => {
@@ -57,11 +59,39 @@ export const Editor = ({ }: EditorPropsTypes) => {
         setProjectPublishData(newPublishData)
     }
 
-    const onPublish = () => {
+    const onPublish = async () => {
+        const userId = user?.id || undefined
+        if (!userId || !projectId) {
+            return
+        }
+        setIsNameAlreadyTaken(false)
+
+        // Checking name availability
+        const projectsListRef = ref(database, `publishNames`)
+        // TODO query with expression where key = input
+        const snapshot = await get(projectsListRef)
+        const snapshotData = snapshot.val()
+        const allNames = Object.keys(snapshotData).map(item => item.toLowerCase())
+        const isTaken = allNames.includes(projectPublishData.name.toLowerCase())
+        console.log({ allNames, isTaken })
+
+        if (isTaken) {
+            setIsNameAlreadyTaken(true)
+            return
+        }
+
+
         const newPublishData = { ...projectPublishData }
         newPublishData.published = true
         newPublishData.publishTime = Date.now()
         setProjectPublishData(newPublishData)
+        // TODO save data on publishNames map
+        const projectPublishNameRef = ref(database, `publishNames/${newPublishData.name}`)
+        const dataToWrite = {
+            projectId,
+            userId,
+        }
+        set(projectPublishNameRef, dataToWrite)
         setIsProjectPublishPopupVisible(false)
     }
 
@@ -271,7 +301,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
                         onAddBlock={onAddBlock}
                         userId={user?.id}
                         projectId={projectId}
-                        projectPublishName={projectPublishData.name}
+                        projectPublishData={projectPublishData}
                         onPublishClick={() => setIsProjectPublishPopupVisible(true)}
                     />
                 </div>
@@ -289,6 +319,13 @@ export const Editor = ({ }: EditorPropsTypes) => {
                             placeholder="Project name"
                             className='editor__publish-popup-input'
                         />
+                        {isNameAlreadyTaken && (
+                            <div
+                                className='editor__publish-popup-error-message'
+                            >
+                                {"This project name is already taken, please chose another one. You'll have the possibility to host it on a custom domain soon instead."}
+                            </div>
+                        )}
                         <Button
                             label="Publish"
                             onClick={onPublish}

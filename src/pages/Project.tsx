@@ -13,7 +13,7 @@ import { ITexts, ILight, IGeometry, IMaterial, IInteraction, IPublishStatus } fr
 type IProjectProps = {};
 
 export const Project = ({ }: IProjectProps) => {
-    const { projectId: urlProjectId, userId: urlUserId } = useParams()
+    const { projectId: urlProjectId, userId: urlUserId, projectName } = useParams()
 
     const defaultLight: ILight[] = [{ type: 'ambient' }, { type: 'directional' }]
     const defaultGeometry: IGeometry = { type: 'box' }
@@ -42,14 +42,28 @@ export const Project = ({ }: IProjectProps) => {
     }, [urlProjectId, urlUserId])
 
     const fetchInitialData = async () => {
-        if (!urlProjectId) {
+        if (!projectName && !urlProjectId) {
             return
         }
-        if (!urlProjectId) {
-            urlUserId
+        if (!projectName && !urlUserId) {
+            return
+        }
+        if (!urlProjectId && !urlProjectId && !projectName) {
+            return
         }
 
-        const projectRef = ref(database, `users/${urlUserId}/projects/${urlProjectId}`)
+        let tmpUrlUserId = urlUserId
+        let tmpUrlProjectId = urlProjectId
+
+        if (projectName) {
+            const projectBasicInfoRef = ref(database, `publishNames/${projectName}`)
+            const snapshotBasicInfo = await get(projectBasicInfoRef)
+            const snapshotBasicInfoData = snapshotBasicInfo.val()
+            tmpUrlUserId = snapshotBasicInfoData?.userId
+            tmpUrlProjectId = snapshotBasicInfoData?.projectId
+        }
+
+        const projectRef = ref(database, `users/${tmpUrlUserId}/projects/${tmpUrlProjectId}`)
         const snapshot = await get(projectRef)
         const snapshotData = snapshot.val()
         setLights(snapshotData?.lights || [...defaultLight])

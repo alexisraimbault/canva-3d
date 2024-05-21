@@ -6,7 +6,7 @@ import { ref, get } from "firebase/database";
 
 import { EditorBlock } from "./EditorBlock";
 
-import { ILight, IGeometry, IInteraction, IMaterial, ITexts } from "../utils.js/types";
+import { ILight, IGeometry, IInteraction, IMaterial, ITexts, IPublishStatus } from "../utils.js/types";
 import { database } from '../utils.js/firebase';
 
 type IPaginationSidebarProps = {
@@ -18,7 +18,7 @@ type IPaginationSidebarProps = {
     editingBlock: number;
     setEditingBlock: (n: number) => void;
     onAddBlock: (n: number | undefined) => void;
-    projectPublishName: string | undefined;
+    projectPublishData: IPublishStatus;
     onPublishClick: () => void;
     userId: string | undefined;
     projectId: string | null;
@@ -40,7 +40,7 @@ export const PaginationSidebar: FC<IPaginationSidebarProps> = ({
     editingBlock,
     setEditingBlock,
     onAddBlock,
-    projectPublishName,
+    projectPublishData,
     onPublishClick,
     userId,
     projectId,
@@ -94,15 +94,15 @@ export const PaginationSidebar: FC<IPaginationSidebarProps> = ({
                 onClick={() => onAddBlock(undefined)}
                 label="Add a block"
             />
-            {((!projectPublishName) || projectPublishName.length <= 0) && (
+            {!projectPublishData.published && (
                 <Button
                     onClick={() => onPublishClick()}
                     label="Publish"
                 />
             )}
-            {projectPublishName && projectPublishName.length > 0 && (
+            {projectPublishData.published && (
                 <div className="pagination-sidebar__project-name">
-                    {projectPublishName}
+                    {projectPublishData.name}
                 </div>
             )}
             <Button
