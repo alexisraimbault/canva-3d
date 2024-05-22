@@ -10,9 +10,11 @@ import { EditorBlock } from "../components/EditorBlock";
 import { database } from '../utils.js/firebase';
 import { ITexts, ILight, IGeometry, IMaterial, IInteraction, IPublishStatus } from "../utils.js/types";
 
-type IProjectProps = {};
+type IProjectProps = {
+    projectNameProps?: string;
+};
 
-export const Project = ({ }: IProjectProps) => {
+export const Project = ({ projectNameProps }: IProjectProps) => {
     const { projectId: urlProjectId, userId: urlUserId, projectName } = useParams()
 
     const defaultLight: ILight[] = [{ type: 'ambient' }, { type: 'directional' }]
@@ -42,13 +44,13 @@ export const Project = ({ }: IProjectProps) => {
     }, [urlProjectId, urlUserId])
 
     const fetchInitialData = async () => {
-        if (!projectName && !urlProjectId) {
+        if (!projectName && !urlProjectId && !projectNameProps) {
             return
         }
-        if (!projectName && !urlUserId) {
+        if (!projectName && !urlUserId && !projectNameProps) {
             return
         }
-        if (!urlProjectId && !urlProjectId && !projectName) {
+        if (!urlProjectId && !urlProjectId && !projectName && !projectNameProps) {
             return
         }
 
@@ -57,6 +59,14 @@ export const Project = ({ }: IProjectProps) => {
 
         if (projectName) {
             const projectBasicInfoRef = ref(database, `publishNames/${projectName}`)
+            const snapshotBasicInfo = await get(projectBasicInfoRef)
+            const snapshotBasicInfoData = snapshotBasicInfo.val()
+            tmpUrlUserId = snapshotBasicInfoData?.userId
+            tmpUrlProjectId = snapshotBasicInfoData?.projectId
+        }
+
+        if (projectNameProps) {
+            const projectBasicInfoRef = ref(database, `publishNames/${projectNameProps}`)
             const snapshotBasicInfo = await get(projectBasicInfoRef)
             const snapshotBasicInfoData = snapshotBasicInfo.val()
             tmpUrlUserId = snapshotBasicInfoData?.userId

@@ -10,6 +10,8 @@ import {
 } from "@kobbleio/react";
 import { Button } from 'primereact/button';
 
+import { Project } from "./Project";
+
 const Home = () => {
     // const { user } = useAuth();
     // const { kobble } = useKobble();
@@ -31,39 +33,47 @@ const Home = () => {
     //     setActionResult(user);
     // };
 
-    return (
-        <div className="homepage__wrapper fullpage-wrapper">
-            <SignedOut>
-                <div className="homepage__btns-container">
-                    <LoginButton>
-                        <Button
-                            label='Login'
-                        />
-                    </LoginButton>
-                </div>
-            </SignedOut>
-            <SignedIn>
-                <div className="homepage__btns-container">
-                    <LogoutButton>
-                        <Button
-                            label='Logout'
-                        />
-                    </LogoutButton>
-                    <ProfileLink>
+    const hostname = window.location.hostname.split(".com")[0].split(".")[0]
+    const isProject = !['canva-3d', 'localhost'].includes('hostname')
 
-                        <Button
-                            label='Profile'
-                        />
-                    </ProfileLink>
-                    <PricingLink>
-                        <Button
-                            label='Pricing'
-                        />
-                    </PricingLink>
-                </div>
-            </SignedIn>
-        </div>
-    );
+    return isProject ? (
+        <Project
+            projectNameProps={hostname}
+        />
+    ) :
+        (
+            <div className="homepage__wrapper fullpage-wrapper">
+                <SignedOut>
+                    <div className="homepage__btns-container">
+                        <LoginButton>
+                            <Button
+                                label='Login'
+                            />
+                        </LoginButton>
+                    </div>
+                </SignedOut>
+                <SignedIn>
+                    <div className="homepage__btns-container">
+                        <LogoutButton>
+                            <Button
+                                label='Logout'
+                            />
+                        </LogoutButton>
+                        <ProfileLink>
+
+                            <Button
+                                label='Profile'
+                            />
+                        </ProfileLink>
+                        <PricingLink>
+                            <Button
+                                label='Pricing'
+                            />
+                        </PricingLink>
+                    </div>
+                </SignedIn>
+            </div>
+        );
 };
 
 export default Home;

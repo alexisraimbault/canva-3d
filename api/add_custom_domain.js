@@ -34,7 +34,6 @@ export default async (request) => {
             'Content-Type': 'application/json',
             'api-key': process.env.VITE_DOMAIN_API_KEY || ''
         },
-        mode: "no-cors",
         body: JSON.stringify(data)
     })
     console.log({ approximatedApiRes })

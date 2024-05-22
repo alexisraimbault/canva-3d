@@ -22,38 +22,53 @@ export const ThreeWrapper = ({
 }: ITreeWrapperProps) => {
     const isSmallMode = mode === "small"
 
-    const getLight = (light: ILight) => {
+    const getLight = (light: ILight, index: number) => {
         const ligtsTypeMap: {
             [id: string]: ReactNode
         } = {
             ambient: (
                 <ambientLight
+                    key={`l-${index}`}
                     intensity={1}
                     color='#FC1EFF'
                 />),
             directional: (
                 <directionalLight
+                    key={`l-${index}`}
                     position={[5, 3, 1]}
                 // color='#FC1EFF'
                 />
             ),
             hemisphere: (
                 <hemisphereLight
+                    key={`l-${index}`}
                     color={'#FC1EFF'}
                     // position={[5, 5, 5]}
                     // groundColor={}
                     intensity={1}
                 />
             ),
-            point: <pointLight />,
-            rect: <rectAreaLight />,
-            spot: <spotLight />
+            point: (
+                <pointLight
+                    key={`l-${index}`}
+                />
+            ),
+            rect: (
+                <rectAreaLight
+                    key={`l-${index}`}
+                />
+            ),
+            spot: (
+                <spotLight
+                    key={`l-${index}`}
+                />
+            )
         }
 
         return ligtsTypeMap[light?.type]
     }
 
-    const lightsArray = lights.map(light => getLight(light))
+    const lightsArray = lights.map((light, index) => getLight(light, index))
 
     return (
         <div className={`three-wrapper__scene${isSmallMode ? ' three-wrapper__scene--small' : ''}`}>
