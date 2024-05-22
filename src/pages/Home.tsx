@@ -34,8 +34,8 @@ const Home = () => {
     // };
 
     const hostname = window.location.hostname.split(".com")[0].split(".")[0]
-    console.log({ hostname })
-    const isProject = !['www', 'canva-3d', 'localhost'].includes('hostname')
+    const isProject = !['www', 'canva-3d', 'localhost'].includes(hostname)
+    console.log({ hostname, isProject })
 
     return isProject ? (
         <Project
