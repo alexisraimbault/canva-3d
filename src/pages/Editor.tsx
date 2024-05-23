@@ -29,7 +29,7 @@ export const Editor = ({ }: EditorPropsTypes) => {
     const defaultLight: ILight[] = [{ type: 'hemisphere' }]
     const defaultGeometry: IGeometry = { type: 'box' }
     const defaultMaterial: IMaterial = { type: 'standard' }
-    const defaultInteraction: IInteraction = { type: 'mouse' }
+    const defaultInteraction: IInteraction = { type: 'timer' }
     const defaultTexts: ITexts = { title: '', subtitle: '', CTALabel: '' }
     const defaultPublishStatus: IPublishStatus = { name: '', published: false, publishTime: null }
 
