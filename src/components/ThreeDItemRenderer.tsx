@@ -1,10 +1,12 @@
 import { ReactNode, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useFrame, useThree } from '@react-three/fiber'
+import { Environment, useEnvironment } from '@react-three/drei'
 import { Vector3, Mesh } from 'three'
 
 
 import { ThreeDItemType, ILight, IGeometry, IMaterial, IInteraction } from "../utils.js/types";
+import { accentColor, darkColor_10, darkColor_60, secondaryColor1, secondaryColor3 } from "../utils.js/colors";
 
 type MeshWrapperProps = {
     geometryObject: ReactNode | undefined,
@@ -49,10 +51,15 @@ const MeshWrapper = ({
         // console.log(a) // the value will be 0 at scene initialization and grow each frame
     })
 
+    const envMap = useEnvironment({ files: '/envmaps/env_map_simple_sky.hdr' })
+
     return (
         <mesh
             ref={meshRef}
         >
+            <Environment
+                map={envMap}
+            />
             {geometryObject && geometryObject}
             {materialObject && materialObject}
         </mesh>
@@ -116,6 +123,35 @@ export const ThreeDItemRenderer = ({
         if (!g) {
             return;
         }
+        // const KnotShaderMaterial = {
+        //     uniforms: {
+        //         viewVector: { type: "v3", value: new Vector3(0, 0, 0) },
+        //         u_time: { type: "f", value: 0 }
+        //     },
+        //     vertexShader: `
+        //       precision mediump float;
+        //       varying vec2 vUv;
+        //       uniform vec3 viewVector;
+        //       varying float reflection;
+        //       void main() {
+        //           gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4( position, 1.0 );
+        //           vec3 actual_normal = vec3(modelMatrix * vec4(normal, 0.0));
+        //           reflection = pow( dot(normalize(viewVector), actual_normal), 6.0 );
+        //           vUv = uv;
+        //       }
+        //     `,
+        //     fragmentShader: `
+        //       varying vec2 vUv;
+        //       uniform float u_time;
+        //       varying float reflection;
+        //       void main() {
+        //         vec2 uv = vUv;
+        //         float cb = floor((uv.x + u_time) * 40.);
+        //         gl_FragColor = vec4(mod(cb, 2.0) * reflection, reflection, reflection,1.);
+        //       }
+        //     `
+        // };
+
         const geometryTypeMap: {
             [id: string]: ReactNode
         } = {
@@ -125,8 +161,34 @@ export const ThreeDItemRenderer = ({
             icosahedron: <icosahedronGeometry />,
             octahedron: <octahedronGeometry />,
             sphere: <sphereGeometry />,
-            torus: <torusGeometry />,
-            torusKnot: <torusKnotGeometry />,
+            torus: (
+                <torusGeometry
+                    args={[1, 0.4, 400, 60]}
+                // parameters={{
+                //     radius: 1,
+                //     tube: 0.4,
+                //     tubularSegments: 400,
+                //     radialSegments: 60,
+                //     arc: Math.PI * 2,
+                // }}
+                />
+            ),
+            torusKnot: (
+                <>
+                    <torusKnotGeometry
+                        args={[1, 0.4, 400, 60]}
+                    // parameters={{
+                    //     radius: 1,
+                    //     tube: 0.4,
+                    //     tubularSegments: 400,
+                    //     radialSegments: 60,
+                    //     p: 2,
+                    //     q: 3,
+                    // }}
+                    />
+                    {/* <shaderMaterial attach="material" args={[KnotShaderMaterial]} /> */}
+                </>
+            ),
             tube: <tubeGeometry />,
             edges: <edgesGeometry />,
             wireframe: <wireframeGeometry />
@@ -139,6 +201,7 @@ export const ThreeDItemRenderer = ({
         if (!m) {
             return;
         }
+        // const envMap = useEnvironment()
         const materialTypeMap: {
             [id: string]: ReactNode
         } = {
@@ -149,7 +212,17 @@ export const ThreeDItemRenderer = ({
             normal: <meshNormalMaterial />,
             phong: <meshPhongMaterial />,
             physical: <meshPhysicalMaterial />,
-            standard: <meshStandardMaterial />,
+            standard: (
+                <meshStandardMaterial
+                    roughness={0}
+                    metalness={1}
+                    color={`#${darkColor_60}`}
+                    emissive={`#${darkColor_10}`}
+                // emissive={`#A53F2B`}
+                // envMap={envMap}
+                />
+            ),
+            // standard: <meshStandardMaterial />,
             toon: <meshToonMaterial />,
         }
 

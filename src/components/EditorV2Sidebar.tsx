@@ -10,7 +10,9 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Slider } from 'primereact/slider';
 
-import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType } from "../utils.js/types";
+import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType } from "../utils.js/types";
+import { orientationOptions, alignmentOptions, geometries, materials, interactions } from '../utils.js/statics'
+import { accentColor, darkColor, lightColor } from "../utils.js/colors";
 
 type EditorV2SidebarProps = {
     onAddItem: (i: ItemType) => void;
@@ -31,7 +33,19 @@ export const EditorV2Sidebar = ({
     selectedItemIndexPath,
     setSelectedItemIndexPath,
 }: EditorV2SidebarProps) => {
-    const itemTypes = [{
+    const getSelectedItem = (itemsTree: ItemType[], path: number[]): ItemType => {
+        if (path.length === 1) {
+            return itemsTree[path[0]]
+        }
+
+        return getSelectedItem(itemsTree[path[0]]?.containerData?.children || [], path.slice(1))
+    }
+
+    const isBackgroundSelection = selectedItemIndexPath !== null && selectedItemIndexPath.length === 1 && selectedItemIndexPath[0] === -1
+    const hasItemSelected = selectedItemIndexPath !== null && !isBackgroundSelection
+    const selectedItem = hasItemSelected ? getSelectedItem(items, selectedItemIndexPath) : null
+
+    const getItemTypes = (isSeparatorChildRender = false) => [{
         id: '3d',
         render: (
             <div>{"3D"}</div>
@@ -50,7 +64,7 @@ export const EditorV2Sidebar = ({
             <div>{"T"}</div>
         ),
         defaultItem: {
-            content: 'Text',
+            content: 'Edit me',
             size: 26,
             weight: 'normal',
             color: project.globalDefaultTextColor,
@@ -69,21 +83,35 @@ export const EditorV2Sidebar = ({
             children: [],
         },
         defaultItemKey: 'containerData'
+    }, {
+        id: 'separator',
+        render: isSeparatorChildRender && hasItemSelected && selectedItem?.type === 'container' && selectedItem.containerData?.orientation === 'horizontal' ? (
+            <div>{"|"}</div>
+        ) : (
+            <div>{"--"}</div>
+        ),
+        defaultItem: {
+            size: 2,
+        },
+        defaultItemKey: 'separatorData'
+    }, {
+        id: 'button',
+        render: (
+            <div>{"Btn"}</div>
+        ),
+        defaultItem: {
+            content: 'Edit me',
+            textSize: 30,
+            textWeight: 'bold',
+            borderRadius: 0,
+            backgroundColor: lightColor,
+            hoverBackgroundColor: accentColor,
+            textColor: darkColor,
+            hoverTextColor: darkColor,
+            action: 'email-popup',
+        },
+        defaultItemKey: 'buttonData'
     }]
-
-    const getSelectedItem = (itemsTree: ItemType[], path: number[]): ItemType => {
-        if (path.length === 1) {
-            return itemsTree[path[0]]
-        }
-
-        return getSelectedItem(itemsTree[path[0]]?.containerData?.children || [], path.slice(1))
-    }
-
-
-    const isBackgroundSelection = selectedItemIndexPath !== null && selectedItemIndexPath.length === 1 && selectedItemIndexPath[0] === -1
-    const hasItemSelected = selectedItemIndexPath !== null && !isBackgroundSelection
-    const selectedItem = hasItemSelected ? getSelectedItem(items, selectedItemIndexPath) : null
-
 
     const onGeometryChange = (e: DropdownChangeEvent) => {
         if (!selectedItem) {
@@ -114,6 +142,20 @@ export const EditorV2Sidebar = ({
         const newSelectedItem: ItemType = { ...selectedItem }
         if (newSelectedItem.threeDData) {
             newSelectedItem.threeDData.interaction = { type: e.target.value }
+        }
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateSeparatorSize = (newSize: Nullable<number | null> | number[]) => {
+        if (!selectedItem) {
+            return;
+        }
+        if (Array.isArray(newSize)) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.separatorData) {
+            newSelectedItem.separatorData.size = newSize || 5
         }
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
@@ -174,7 +216,6 @@ export const EditorV2Sidebar = ({
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
 
-
     const onUpdateTextColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
         if (color === null) {
             return
@@ -191,6 +232,150 @@ export const EditorV2Sidebar = ({
         const newSelectedItem: ItemType = { ...selectedItem }
         if (newSelectedItem.textData !== undefined) {
             newSelectedItem.textData.color = color.toString()
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onToggleBtnBoldText = () => {
+        if (!selectedItem) {
+            return;
+        }
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.textWeight = newSelectedItem.buttonData.textWeight === "bold" ? "normal" : "bold"
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnTextContent = (newTextContent: string) => {
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.content = newTextContent
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+
+    }
+
+    const onUpdateBtnTextSize = (newTextSize: Nullable<number | null>) => {
+        if (!selectedItem) {
+            return;
+        }
+
+        if (!newTextSize) {
+            return;
+        }
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.textSize = newTextSize
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnBorderRadius = (newBorderRadius: Nullable<number | null>) => {
+        if (!selectedItem) {
+            return;
+        }
+
+        if (newBorderRadius !== 0 && !newBorderRadius) {
+            return;
+        }
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.borderRadius = newBorderRadius
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnBgColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
+        if (color === null) {
+            return
+        }
+        if (color === undefined) {
+            return
+        }
+        if (color.toString().length > 6) {
+            return
+        }
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.backgroundColor = color.toString()
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnHoverBgColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
+        if (color === null) {
+            return
+        }
+        if (color === undefined) {
+            return
+        }
+        if (color.toString().length > 6) {
+            return
+        }
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.hoverBackgroundColor = color.toString()
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnTextColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
+        if (color === null) {
+            return
+        }
+        if (color === undefined) {
+            return
+        }
+        if (color.toString().length > 6) {
+            return
+        }
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.textColor = color.toString()
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateBtnHoveredTextColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
+        if (color === null) {
+            return
+        }
+        if (color === undefined) {
+            return
+        }
+        if (color.toString().length > 6) {
+            return
+        }
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData !== undefined) {
+            newSelectedItem.buttonData.hoverTextColor = color.toString()
         }
 
         onEditItem(selectedItemIndexPath, newSelectedItem)
@@ -229,7 +414,7 @@ export const EditorV2Sidebar = ({
     const onAddContainerChild = (itemStatics: {
         id: string,
         render: ReactNode,
-        defaultItem: ThreeDItemType | TextType | ContainerType,
+        defaultItem: ThreeDItemType | TextType | ContainerType | ButtonType | SeparatorType,
         defaultItemKey: string
     }) => {
         if (!selectedItem) {
@@ -256,32 +441,6 @@ export const EditorV2Sidebar = ({
             return
         }
 
-        const orientationOptions = [
-            {
-                label: 'Horizontal',
-                value: 'horizontal'
-            },
-            {
-                label: 'Vertical',
-                value: 'vertical'
-            },
-        ]
-
-        const alignmentOptions = [
-            {
-                label: 'Start',
-                value: 'start'
-            },
-            {
-                label: 'Center',
-                value: 'center'
-            },
-            {
-                label: 'End',
-                value: 'end'
-            },
-        ]
-
         return (
             <div className="editorv2-sidebar__3d-form-container">
                 <div className="editorv2-sidebar__form-label">{"Orientation"}</div>
@@ -303,7 +462,7 @@ export const EditorV2Sidebar = ({
                     className='editorv2-sidebar__form-input-row'
                 >
 
-                    {itemTypes.map(itemType => (
+                    {getItemTypes(true).map(itemType => (
                         <div
                             className="editorv2-sidebar__container-edition-add-item-btn"
                             key={`c-it-${itemType.id}`}
@@ -368,112 +527,149 @@ export const EditorV2Sidebar = ({
         )
     }
 
+    const renderButtonCustomisation = () => {
+        if (selectedItem?.type !== 'button') {
+            return
+        }
+
+        return (
+            <div className="editorv2-sidebar__3d-form-container">
+                <div className="editorv2-sidebar__form-label">{"Background color"}</div>
+                <ColorPicker
+                    format="hex"
+                    value={selectedItem?.buttonData?.backgroundColor}
+                    onChange={(e) => onUpdateBtnBgColor(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <IconField
+                    iconPosition="left"
+                    className='editorv2-sidebar__form-input-container'
+                >
+                    <InputIcon className="pi pi-hashtag"> </InputIcon>
+                    <InputText
+                        value={selectedItem?.buttonData?.backgroundColor}
+                        onChange={(e) => onUpdateBtnBgColor(e.target.value)}
+                        placeholder="FFFFFF"
+                    />
+                </IconField>
+                <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
+                <ColorPicker
+                    format="hex"
+                    value={selectedItem?.buttonData?.hoverBackgroundColor}
+                    onChange={(e) => onUpdateBtnHoverBgColor(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <IconField
+                    iconPosition="left"
+                    className='editorv2-sidebar__form-input-container'
+                >
+                    <InputIcon className="pi pi-hashtag"> </InputIcon>
+                    <InputText
+                        value={selectedItem?.buttonData?.hoverBackgroundColor}
+                        onChange={(e) => onUpdateBtnHoverBgColor(e.target.value)}
+                        placeholder="FFFFFF"
+                    />
+                </IconField>
+                <div className="editorv2-sidebar__form-label">{"Label"}</div>
+                <InputText
+                    value={selectedItem?.buttonData?.content || ''}
+                    onChange={(e) => onUpdateBtnTextContent(e.target.value)}
+                    placeholder="Content"
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <div className="editorv2-sidebar__form-label">{"Text size"}</div>
+                <InputNumber
+                    value={selectedItem?.buttonData?.textSize || 26}
+                    onValueChange={(e) => onUpdateBtnTextSize(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <div className="editorv2-sidebar__form-label">{"Text decoration"}</div>
+                <div
+                    className={`
+                        editorv2-sidebar__bold-input-container
+                        ${selectedItem?.buttonData?.textWeight === 'bold' ? ' editorv2-sidebar__bold-input-container--selected' : ''}
+                    `}
+                    onClick={onToggleBtnBoldText}
+                >
+                    {"B"}
+                </div>
+                <div className="editorv2-sidebar__form-label">{"Text color"}</div>
+                <ColorPicker
+                    format="hex"
+                    value={selectedItem?.buttonData?.textColor}
+                    onChange={(e) => onUpdateBtnTextColor(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <IconField
+                    iconPosition="left"
+                    className='editorv2-sidebar__form-input-container'
+                >
+                    <InputIcon className="pi pi-hashtag"> </InputIcon>
+                    <InputText
+                        value={selectedItem?.buttonData?.textColor}
+                        onChange={(e) => onUpdateBtnTextColor(e.target.value)}
+                        placeholder="FFFFFF"
+                    />
+                </IconField>
+                <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
+                <ColorPicker
+                    format="hex"
+                    value={selectedItem?.buttonData?.hoverTextColor}
+                    onChange={(e) => onUpdateBtnHoveredTextColor(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <IconField
+                    iconPosition="left"
+                    className='editorv2-sidebar__form-input-container'
+                >
+                    <InputIcon className="pi pi-hashtag"> </InputIcon>
+                    <InputText
+                        value={selectedItem?.buttonData?.hoverTextColor}
+                        onChange={(e) => onUpdateBtnHoveredTextColor(e.target.value)}
+                        placeholder="FFFFFF"
+                    />
+                </IconField>
+                <div className="editorv2-sidebar__form-label">{"Border radius"}</div>
+                <InputNumber
+                    value={selectedItem?.buttonData?.borderRadius || 0}
+                    onValueChange={(e) => onUpdateBtnBorderRadius(e.value)}
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <div className="editorv2-sidebar__form-label">{"Action"}</div>
+                <div className="editorv2-sidebar__form-big-label">{"Email gathering popup"}</div>
+                <div className="editorv2-sidebar__form-big-label">{"(More options to come)"}</div>
+            </div>
+        )
+    }
+
+    const renderSeparatorCustomisation = () => {
+        if (selectedItem?.type !== 'separator') {
+            return
+        }
+
+        return (
+            <div className="editorv2-sidebar__3d-form-container">
+                <div className="editorv2-sidebar__form-label">{"Size"}</div>
+                <InputNumber
+                    value={selectedItem.separatorData?.size}
+                    onValueChange={(e) => onUpdateSeparatorSize(e.value)}
+                // className='editorv2-sidebar__form-input-container'
+                />
+                <Slider
+                    value={selectedItem.separatorData?.size}
+                    onChange={(e) => onUpdateSeparatorSize(e.value)}
+                    min={1}
+                    max={100}
+                    className='editorv2-sidebar__form-input-slider'
+                />
+            </div>
+        )
+    }
+
     const render3dItemCustomisation = () => {
         if (selectedItem?.type !== '3d') {
             return
         }
-
-        const geometries = [
-            {
-                label: 'Box',
-                value: 'box'
-            },
-            {
-                label: 'Capsule',
-                value: 'capsule'
-            },
-            {
-                label: 'Dodecahedron',
-                value: 'dodecahedron'
-            },
-            {
-                label: 'Icosahedron',
-                value: 'icosahedron'
-            },
-            {
-                label: 'Octahedron',
-                value: 'octahedron'
-            },
-            {
-                label: 'Sphere',
-                value: 'sphere'
-            },
-            {
-                label: 'Torus',
-                value: 'torus'
-            },
-            {
-                label: 'TorusKnot',
-                value: 'torusKnot'
-            },
-            {
-                label: 'Tube',
-                value: 'tube'
-            },
-            {
-                label: 'Edges',
-                value: 'edges'
-            },
-            {
-                label: 'Wireframe',
-                value: 'wireframe'
-            },
-        ]
-
-        const materials = [
-            {
-                label: 'Basic',
-                value: 'basic',
-            },
-            {
-                label: 'Depth',
-                value: 'depth',
-            },
-            {
-                label: 'Lambert',
-                value: 'lambert',
-            },
-            {
-                label: 'Matcap',
-                value: 'matcap',
-            },
-            {
-                label: 'Normal',
-                value: 'normal',
-            },
-            {
-                label: 'Phong',
-                value: 'phong',
-            },
-            {
-                label: 'Physical',
-                value: 'physical',
-            },
-            {
-                label: 'Standard',
-                value: 'standard',
-            },
-            {
-                label: 'Toon',
-                value: 'toon',
-            },
-        ]
-
-        const interactions = [
-            // TODO handle mouse interaction better
-            // {
-            //     label: 'Mouse',
-            //     value: 'mouse',
-            // },
-            {
-                label: 'Timer',
-                value: 'timer',
-            },
-            {
-                label: 'Scroll',
-                value: 'scroll',
-            },
-        ]
 
         // TODO edit more things (size, colors, add shapes, add more complex metarials, shininess, diffusion, ect)
 
@@ -597,7 +793,7 @@ export const EditorV2Sidebar = ({
     return (
         <div className="editorv2-sidebar__wrapper">
             <div className="editorv2-sidebar__inner-btns-container">
-                {itemTypes.map(itemType => (
+                {getItemTypes().map(itemType => (
                     <div
                         className="editorv2-sidebar__add-item-btn"
                         key={`it-${itemType.id}`}
@@ -616,12 +812,14 @@ export const EditorV2Sidebar = ({
                         {selectedItem && selectedItem.type === '3d' && render3dItemCustomisation()}
                         {selectedItem && selectedItem.type === 'text' && renderTextItemCustomisation()}
                         {selectedItem && selectedItem.type === 'container' && renderContainerCustomisation()}
+                        {selectedItem && selectedItem.type === 'button' && renderButtonCustomisation()}
+                        {selectedItem && selectedItem.type === 'separator' && renderSeparatorCustomisation()}
                     </div>
-                    <Button
+                    {/* <Button
                         label="Close"
                         onClick={() => setSelectedItemIndexPath(null)}
                         className="editorv2-sidebar__customisatino-close-btn"
-                    />
+                    /> */}
                 </div>
             )}
             {isBackgroundSelection && (

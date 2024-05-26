@@ -52,6 +52,18 @@ export type TextType = {
     // TODO add color / font / decoration ...
 }
 
+export type ButtonType = {
+    content: string,
+    textSize: number,
+    textWeight: string,
+    borderRadius: number,
+    backgroundColor: string,
+    hoverBackgroundColor: string,
+    textColor: string,
+    hoverTextColor: string,
+    action: string,
+}
+
 export type ContainerType = {
     align: string,
     orientation: string,
@@ -61,12 +73,18 @@ export type ContainerType = {
     children: ItemType[],
 }
 
+export type SeparatorType = {
+    size: number,
+}
+
 // export type ItemType<T> = {
 export type ItemType = {
     type: string,
     threeDData?: ThreeDItemType,
     textData?: TextType,
     containerData?: ContainerType,
+    buttonData?: ButtonType,
+    separatorData?: SeparatorType,
     // data: T extends ThreeDItemType ? ThreeDItemType :
     // T extends TextType ? TextType : ContainerType;
 }
