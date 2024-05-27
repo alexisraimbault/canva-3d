@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@kobbleio/react": "^1.1.0",
+    "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.3",
     "@types/three": "^0.164.0",
     "firebase": "^10.11.1",
+    "primeicons": "^7.0.0",
     "primereact": "^10.6.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,8 +24,8 @@
     "three": "^0.164.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.66",
     "@types/node": "^20.12.11",
+    "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",

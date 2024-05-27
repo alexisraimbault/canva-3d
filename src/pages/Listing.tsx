@@ -10,21 +10,33 @@ import { Button } from 'primereact/button';
 
 import { Card } from "../components/Card";
 import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
-import { EditorBlock } from "../components/EditorBlock";
 
 import { database } from '../utils.js/firebase';
-import { IProject } from "../utils.js/types";
+import { ProjectV2Type } from "../utils.js/types";
+import { ExecOptionsWithStringEncoding } from "child_process";
 
 type IListingProps = {};
-type projectListingType = { [key: string]: IProject }
+type projectListingType = { [key: string]: ProjectV2Type }
+type emailsListingType = {
+    [key: string]: {
+        list: {
+            [key: string]: {
+                reatedAt: number,
+                email: ExecOptionsWithStringEncoding,
+            }
+        }
+    }
+}
 export const Listing = ({ }: IListingProps) => {
     const { user } = useAuth();
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<projectListingType>({});
+    const [emailsData, setEmailsData] = useState<emailsListingType>({});
 
     useEffect(() => {
         fetchProjects();
+        fetchProjectEmails();
     }, [user]);
 
     const fetchProjects = async () => {
@@ -39,6 +51,20 @@ export const Listing = ({ }: IListingProps) => {
         const snapshot = await get(userProjectsRef)
         const snapshotData = snapshot.val()
         setProjects(snapshotData)
+    }
+
+    const fetchProjectEmails = async () => {
+        setProjects({})
+
+        if (!user) {
+            return
+        }
+
+        const userId = user?.id
+        const userProjectsEmailsRef = ref(database, `emails/${userId}`)
+        const snapshot = await get(userProjectsEmailsRef)
+        const snapshotData = snapshot.val()
+        setEmailsData(snapshotData || {})
     }
 
     const onAddProject = () => {
@@ -61,7 +87,9 @@ export const Listing = ({ }: IListingProps) => {
                         {projects && Object.keys(projects).map(key => {
 
                             const projectData = projects[key]
-                            const nbBlocks = projectData?.geometries?.length || 0
+                            const nbBlocks = projectData?.items?.length || 0
+                            const emails = Object.keys(emailsData).includes(key) ? emailsData[key]?.list : {}
+
                             return (
                                 <Card
                                     key={`lp-${key}`}
@@ -69,18 +97,17 @@ export const Listing = ({ }: IListingProps) => {
                                     onClick={() => onEditProject(key)}
                                 >
                                     <div>
+                                        {`${projectData.name || 'Unnamed'}`}
+                                    </div>
+                                    <div>
+                                        {`${projectData.published ? 'Published' : 'Draft'}`}
+                                    </div>
+                                    <div>
                                         {`${nbBlocks} Blocks`}
                                     </div>
-                                    {nbBlocks > 0 && (
-                                        <EditorBlock
-                                            texts={projectData.texts[0]}
-                                            lights={projectData.lights[0]}
-                                            geometry={projectData.geometries[0]}
-                                            material={projectData.materials[0]}
-                                            interaction={projectData.interactions[0]}
-                                            mode="small"
-                                        />
-                                    )}
+                                    <div>
+                                        {`${Object.keys(emails).length} Emails`}
+                                    </div>
                                 </Card>
                             )
                         })}
