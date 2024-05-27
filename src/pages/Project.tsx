@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-// import { ref, push, get } from "firebase/database";
-import { ref, get } from "firebase/database";
-// import { Dialog } from 'primereact/dialog';
-// import { InputText } from 'primereact/inputtext';
-// import { Button } from 'primereact/button';
+import { ref, push, get } from "firebase/database";
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
 
 import { database } from '../utils.js/firebase';
 import { defaultProject } from '../utils.js/statics';
@@ -22,13 +21,19 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
     const [hasLoaded, setHasLoaded] = useState(false)
     console.log({ hasLoaded })
 
-    // const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
-    // const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
+    const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
+    const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
+    const [isEmailRegistered, setIsEmailRegistered] = useState(false)
 
     useEffect(() => {
         fetchInitialData()
 
     }, [urlProjectId, urlUserId])
+
+    useEffect(() => {
+        setIsEmailRegistered(false)
+
+    }, [emailGatherPopupInputText])
 
     const fetchInitialData = async () => {
         if (!projectName && !urlProjectId && !projectNameProps) {
@@ -67,34 +72,72 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         setHasLoaded(true)
     }
 
-    // const onAddEmail = () => {
-    //     if (!hasLoaded) {
-    //         return
-    //     }
+    const onAddEmail = async () => {
+        if (!hasLoaded) {
+            return
+        }
 
-    //     if (!urlProjectId || !emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
-    //         return
-    //     }
+        if (!projectName && !urlProjectId && !projectNameProps) {
+            return
+        }
+        if (!projectName && !urlUserId && !projectNameProps) {
+            return
+        }
+        if (!urlProjectId && !urlProjectId && !projectName && !projectNameProps) {
+            return
+        }
 
-    //     pushEmailToProject(emailGatherPopupInputText, urlProjectId)
-    // }
+        if (!emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
+            return
+        }
 
-    // const pushEmailToProject = (email: string, urlProjectId: string) => {
-    //     if (!urlUserId) {
-    //         return
-    //     }
+        if (isEmailRegistered) {
+            return
+        }
 
-    //     const projectEmailRef = ref(database, `emails/${urlUserId}/${urlProjectId}/list`)
-    //     const emailData = {
-    //         email,
-    //         createdAt: Date.now(),
-    //     }
-    //     push(projectEmailRef, emailData);
-    // }
+        let tmpUrlUserId = urlUserId
+        let tmpUrlProjectId = urlProjectId
+
+        if (projectName) {
+            const projectBasicInfoRef = ref(database, `publishNames/${projectName}`)
+            const snapshotBasicInfo = await get(projectBasicInfoRef)
+            const snapshotBasicInfoData = snapshotBasicInfo.val()
+            tmpUrlUserId = snapshotBasicInfoData?.userId
+            tmpUrlProjectId = snapshotBasicInfoData?.projectId
+        }
+
+        if (projectNameProps) {
+            const projectBasicInfoRef = ref(database, `publishNames/${projectNameProps}`)
+            const snapshotBasicInfo = await get(projectBasicInfoRef)
+            const snapshotBasicInfoData = snapshotBasicInfo.val()
+            tmpUrlUserId = snapshotBasicInfoData?.userId
+            tmpUrlProjectId = snapshotBasicInfoData?.projectId
+        }
+
+        await pushEmailToProject(emailGatherPopupInputText, tmpUrlProjectId, tmpUrlUserId)
+        setIsEmailRegistered(true)
+    }
+
+    const pushEmailToProject = async (email: string, emailProjectId: string | undefined, emailUserId: string | undefined) => {
+        if (!emailProjectId || !emailUserId) {
+            return
+        }
+
+        const projectEmailRef = ref(database, `emails/${emailUserId}/${emailProjectId}/list`)
+        const emailData = {
+            email,
+            createdAt: Date.now(),
+        }
+        await push(projectEmailRef, emailData);
+    }
 
     const isPublished = projectData.name &&
         projectData.name.length > 0 &&
         projectData.published
+
+    const defaultPopupTexts = {
+        title: "Early access"
+    }
 
     return (
         <div className='project-view__wrapper'>
@@ -111,6 +154,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                                 key={`item-${projectItemIndex}`}
                                 item={projectItem}
                                 isLive
+                                toggleEmailPopup={() => setIsEmailGatherPopupVisible(true)}
                             />
                         )
                     })}
@@ -125,8 +169,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                     <p>{"If you just published the project, wait a few minutes."}</p>
                 </div>
             )}
-            {/* TODO email popup gathering */}
-            {/* <Dialog
+            <Dialog
                 header={null}
                 visible={isEmailGatherPopupVisible}
                 style={{ width: '600px' }}
@@ -134,7 +177,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
             >
                 <div className='project-view__email-popup-content'>
                     <div className='project-view__email-popup-inner'>
-                        <div className='quantico-bold project-view__email-popup-title'>{emailPopupTexts.CTALabel}</div>
+                        <div className='quantico-bold project-view__email-popup-title'>{defaultPopupTexts.title}</div>
                         <div className='project-view__email-popup-text'>{"Enter your email to receive a private access link"}</div>
                         <InputText
                             value={emailGatherPopupInputText || ''}
@@ -142,13 +185,18 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                             placeholder="Email"
                             className='project-view__email-popup-input'
                         />
+                        {isEmailRegistered && (
+                            <div className='project-view__email-popup-confirm'>
+                                {"Your email is registered, we will contact you shortly !"}
+                            </div>
+                        )}
                         <Button
                             label="Register"
                             onClick={onAddEmail}
                         />
                     </div>
                 </div>
-            </Dialog> */}
+            </Dialog>
         </div>
     );
 }

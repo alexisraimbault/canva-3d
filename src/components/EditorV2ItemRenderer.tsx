@@ -10,6 +10,7 @@ import { storage } from "../utils.js/firebase";
 interface EditorV2ItemRendererProps {
     item: ItemType;
     onSelectItem?: () => void;
+    toggleEmailPopup?: () => void;
     itemIndexPath?: number[];
     relativeSelectedItemIndexPath?: number[];
     isSelected?: boolean;
@@ -20,6 +21,7 @@ interface EditorV2ItemRendererProps {
 export const EditorV2ItemRenderer = ({
     item,
     onSelectItem = () => { },
+    toggleEmailPopup = () => { },
     setSelectedItemIndexPath = () => { },
     relativeSelectedItemIndexPath = [],
     isSelected = false,
@@ -141,6 +143,7 @@ export const EditorV2ItemRenderer = ({
                 }}
                 onMouseEnter={() => toggleDetectOver(true)}
                 onMouseLeave={() => toggleDetectOver(false)}
+                onClick={toggleEmailPopup}
             >
                 {itemData?.content || ''}
             </button>
@@ -198,6 +201,7 @@ export const EditorV2ItemRenderer = ({
                             relativeSelectedItemIndexPath={newRelativeSelectedItemIndexPath}
                             isSelected={newRelativeSelectedItemIndexPath?.length === 1 && newRelativeSelectedItemIndexPath[0] === chindIndex}
                             isLive={isLive}
+                            toggleEmailPopup={toggleEmailPopup}
                         />
                     )
                 })}

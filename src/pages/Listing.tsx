@@ -13,17 +13,30 @@ import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
 
 import { database } from '../utils.js/firebase';
 import { ProjectV2Type } from "../utils.js/types";
+import { ExecOptionsWithStringEncoding } from "child_process";
 
 type IListingProps = {};
 type projectListingType = { [key: string]: ProjectV2Type }
+type emailsListingType = {
+    [key: string]: {
+        list: {
+            [key: string]: {
+                reatedAt: number,
+                email: ExecOptionsWithStringEncoding,
+            }
+        }
+    }
+}
 export const Listing = ({ }: IListingProps) => {
     const { user } = useAuth();
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<projectListingType>({});
+    const [emailsData, setEmailsData] = useState<emailsListingType>({});
 
     useEffect(() => {
         fetchProjects();
+        fetchProjectEmails();
     }, [user]);
 
     const fetchProjects = async () => {
@@ -38,6 +51,20 @@ export const Listing = ({ }: IListingProps) => {
         const snapshot = await get(userProjectsRef)
         const snapshotData = snapshot.val()
         setProjects(snapshotData)
+    }
+
+    const fetchProjectEmails = async () => {
+        setProjects({})
+
+        if (!user) {
+            return
+        }
+
+        const userId = user?.id
+        const userProjectsEmailsRef = ref(database, `emails/${userId}`)
+        const snapshot = await get(userProjectsEmailsRef)
+        const snapshotData = snapshot.val()
+        setEmailsData(snapshotData || {})
     }
 
     const onAddProject = () => {
@@ -61,6 +88,7 @@ export const Listing = ({ }: IListingProps) => {
 
                             const projectData = projects[key]
                             const nbBlocks = projectData?.items?.length || 0
+                            const emails = Object.keys(emailsData).includes(key) ? emailsData[key]?.list : {}
 
                             return (
                                 <Card
@@ -69,7 +97,16 @@ export const Listing = ({ }: IListingProps) => {
                                     onClick={() => onEditProject(key)}
                                 >
                                     <div>
+                                        {`${projectData.name || 'Unnamed'}`}
+                                    </div>
+                                    <div>
+                                        {`${projectData.published ? 'Published' : 'Draft'}`}
+                                    </div>
+                                    <div>
                                         {`${nbBlocks} Blocks`}
+                                    </div>
+                                    <div>
+                                        {`${Object.keys(emails).length} Emails`}
                                     </div>
                                 </Card>
                             )
