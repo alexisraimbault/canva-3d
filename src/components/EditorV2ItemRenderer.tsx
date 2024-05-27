@@ -117,6 +117,7 @@ export const EditorV2ItemRenderer = ({
                     fontWeight: itemData?.weight === 'bold' ? 700 : 400,
                     fontSize: `${itemData?.size || 2}em`,
                     color: `#${itemData?.color || darkColor}`,
+                    maxWidth: `calc(100vw - 20px)`,
                 }}
             >
                 {itemData?.content || ''}
