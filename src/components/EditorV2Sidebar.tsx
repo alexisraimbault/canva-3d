@@ -858,7 +858,7 @@ export const EditorV2Sidebar = ({
                     value={selectedItem.threeDData?.size}
                     onChange={(e) => onUpdate3dItemSize(e.value)}
                     min={5}
-                    max={100}
+                    max={200}
                     className='editorv2-sidebar__form-input-slider'
                 />
             </div>

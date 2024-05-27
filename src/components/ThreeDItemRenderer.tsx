@@ -237,8 +237,8 @@ export const ThreeDItemRenderer = ({
         <div
             className="three-d-item-renderer__wrapper"
             style={{
-                width: `${item?.size || 20}vw`,
-                height: `${item?.size || 20}vw`,
+                width: `${item?.size || 20}vh`,
+                height: `${item?.size || 20}vh`,
             }}
         >
             <Canvas

@@ -649,3 +649,12 @@ body {
 // .three-d-item-renderer {
 //   &__wrapper {}
 // }
+
+// Mobile rules 
+@media (max-width:961px) {
+  .editor-v2-item {
+    &__wrapper {
+      padding: 20px 4px;
+    }
+  }
+}

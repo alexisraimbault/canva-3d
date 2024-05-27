@@ -143,7 +143,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         <div className='project-view__wrapper'>
             {isPublished && (
                 <div
-                    className='project-view__page-content fullpage-wrapper'
+                    className='project-view__page-content'
                     style={{
                         backgroundColor: `#${projectData.globalBgColor}`,
                     }}
