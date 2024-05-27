@@ -550,7 +550,6 @@ export const EditorV2Sidebar = ({
                 <div
                     className='editorv2-sidebar__form-input-row'
                 >
-
                     {itemTypes.map(itemType => (
                         <div
                             className="editorv2-sidebar__container-edition-add-item-btn"
@@ -944,6 +943,7 @@ export const EditorV2Sidebar = ({
                 </IconField>
                 {(!project.published) && (
                     <>
+                        <div className="editorv2-sidebar__form-label">{"Publish"}</div>
                         <IconField
                             iconPosition="left"
                             className='editorv2-sidebar__form-input-container'
@@ -955,20 +955,21 @@ export const EditorV2Sidebar = ({
                                 placeholder="my_project"
                             />
                         </IconField>
+                        {isNameAlreadyTaken && (
+                            <div className="editorv2-sidebar__error-message editorv2-sidebar__form-input-container">
+                                {"This name is already taken, please choose another one"}
+                            </div>
+                        )}
                         <Button
                             label="Publish"
                             onClick={() => onPublish()}
                         // className="editorv2-sidebar__customisatino-delete-btn"
                         />
-                        {isNameAlreadyTaken && (
-                            <div className="editorv2-sidebar__error-message">
-                                {"This name is already taken, please choose another one"}
-                            </div>
-                        )}
                     </>
                 )}
                 {project.published && (
                     <>
+                        <div className="editorv2-sidebar__form-label">{"Published at"}</div>
                         <div className="editorv2-sidebar__publish-link">
                             {`${project.name}.canva.com`}
                         </div>

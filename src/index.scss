@@ -499,6 +499,12 @@ body {
     // removing width for sidebar and .fullpage-wrapper padding
     width: calc(100vw - 60px - 80px);
     overflow-x: hidden;
+
+    &--reduced {
+      // removing width for sidebar and .fullpage-wrapper padding
+      width: calc(100vw - 60px - 80px - 240px - 40px);
+      margin-left: calc(60px + 240px + 40px);
+    }
   }
 
 }
@@ -535,10 +541,11 @@ body {
 
   &__customisation-section {
     background-color: $darkColor_10;
+    width: 240px;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    // align-items: center;
     justify-content: space-between;
     overflow: scroll;
   }
@@ -584,6 +591,7 @@ body {
 
   &__form-input-row {
     display: flex;
+    flex-wrap: wrap;
   }
 
   &__container-edition-add-item-btn {

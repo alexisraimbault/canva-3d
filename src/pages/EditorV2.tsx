@@ -27,6 +27,9 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
     const [hasLoaded, setHasLoaded] = useState(urlProjectId ? false : true)
     const [isNameAlreadyTaken, setIsNameAlreadyTaken] = useState(false)
 
+    const isSidebarBackgroundSelection = selectedItemIndexPath !== null && selectedItemIndexPath.length === 1 && selectedItemIndexPath[0] === -1
+    const isSidebarItemSelected = selectedItemIndexPath !== null && !isSidebarBackgroundSelection
+
     useEffect(() => {
         fetchInitialData()
     }, [urlProjectId, user])
@@ -52,7 +55,8 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         const projectRef = ref(database, `users/${userId}/projects/${urlProjectId}`)
         const snapshot = await get(projectRef)
         const snapshotData = snapshot.val()
-        setProjectData(snapshotData)
+        const projectInit = { ...defaultProject, ...snapshotData }
+        setProjectData(projectInit)
         setHasLoaded(true)
     }
 
@@ -196,6 +200,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         const newProject = { ...projectData }
         newProject.items = removeItemWithPathAndRetrieveRec(itemIndexPath, newProject.items)
         setProjectData(newProject)
+        setSelectedItemIndexPath(null)
     }
 
     const onToggleBackgroundCustomisation = () => {
@@ -227,13 +232,17 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                         isNameAlreadyTaken={isNameAlreadyTaken}
                     />
                     <div
-                        className="editorv2__page-content fullpage-wrapper"
+                        className={
+                            `editorv2__page-content
+                            ${(isSidebarBackgroundSelection || isSidebarItemSelected) ? ' editorv2__page-content--reduced' : ''}
+                            fullpage-wrapper`
+                        }
                         onClick={onToggleBackgroundCustomisation}
                         style={{
                             backgroundColor: `#${projectData.globalBgColor}`,
                         }}
                     >
-                        {projectData.items.map((projectItem, projectItemIndex) => {
+                        {projectData?.items?.map((projectItem, projectItemIndex) => {
                             return (
                                 <EditorV2ItemRenderer
                                     key={`item-${projectItemIndex}`}

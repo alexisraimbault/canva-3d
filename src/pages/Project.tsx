@@ -105,7 +105,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                         backgroundColor: `#${projectData.globalBgColor}`,
                     }}
                 >
-                    {projectData.items.map((projectItem, projectItemIndex) => {
+                    {projectData?.items?.map((projectItem, projectItemIndex) => {
                         return (
                             <EditorV2ItemRenderer
                                 key={`item-${projectItemIndex}`}
