@@ -84,7 +84,7 @@ export const EditorV2Sidebar = ({
         ),
         defaultItem: {
             content: 'Edit me',
-            size: 26,
+            size: 1.5,
             weight: 'normal',
             color: project.globalDefaultTextColor,
         },
@@ -119,7 +119,7 @@ export const EditorV2Sidebar = ({
         ),
         defaultItem: {
             content: 'Edit me',
-            textSize: 30,
+            textSize: 2,
             textWeight: 'bold',
             borderRadius: 0,
             backgroundColor: lightColor,

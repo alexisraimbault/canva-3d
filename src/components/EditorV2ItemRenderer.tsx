@@ -115,7 +115,7 @@ export const EditorV2ItemRenderer = ({
             <div
                 style={{
                     fontWeight: itemData?.weight === 'bold' ? 700 : 400,
-                    fontSize: itemData?.size || 26,
+                    fontSize: `${itemData?.size || 2}em`,
                     color: `#${itemData?.color || darkColor}`,
                 }}
             >
@@ -130,7 +130,7 @@ export const EditorV2ItemRenderer = ({
                 className="editor-v2-item__custom-button-container"
                 style={{
                     fontWeight: itemData?.textWeight === 'bold' ? 700 : 400,
-                    fontSize: itemData?.textSize || 26,
+                    fontSize: `${itemData?.textSize || 2}em`,
                     color: `#${!isItemHovered ?
                         (itemData?.textColor || darkColor) :
                         (itemData?.hoverTextColor || darkColor)
@@ -152,17 +152,24 @@ export const EditorV2ItemRenderer = ({
 
     const renderContainerItem = (itemData: ContainerType | undefined) => {
         const isVertical = itemData?.orientation === 'vertical'
-        const alignmentCSS = {
+        const alignmentCSS: {
+            alignItems: string,
+            justifyContent: string,
+            textAlign: CanvasTextAlign | undefined,
+        } = {
             alignItems: 'center',
             justifyContent: 'center',
+            textAlign: 'center',
         }
 
         if (isVertical) {
             if (itemData?.align === 'start') {
                 alignmentCSS.alignItems = 'flex-start';
+                alignmentCSS.textAlign = 'start';
             }
             if (itemData?.align === 'end') {
                 alignmentCSS.alignItems = 'flex-end';
+                alignmentCSS.textAlign = 'end';
             }
         } else {
             if (itemData?.align === 'start') {
