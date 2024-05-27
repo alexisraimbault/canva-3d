@@ -3,7 +3,7 @@ import { ReactNode, useRef } from "react";
 import { useFrame, useThree } from '@react-three/fiber'
 import { Vector3, Mesh } from 'three'
 
-import { IInteraction, IGeometry, IMaterial } from "../utils.js/types";
+import { IInteraction } from "../utils.js/types";
 
 type IMeshWrapperV2Props = {
     geometry: ReactNode | undefined,

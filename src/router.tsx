@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home";
-import { Editor } from "./pages/Editor";
 import { EditorV2 } from "./pages/EditorV2";
 import Callback from "./pages/Callback";
 import { Listing } from "./pages/Listing";
@@ -17,7 +16,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/editor",
-        element: <Editor />,
+        element: <EditorV2 />,
     },
     {
         path: "/editorv2",
@@ -25,7 +24,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/editor/:projectId",
-        element: <Editor />,
+        element: <EditorV2 />,
     },
     {
         path: "/callback",

@@ -4,6 +4,8 @@ import {
     SignedOut,
     useAuth
 } from "@kobbleio/react";
+import { useParams } from 'react-router-dom'
+import { ref, push, set, get } from "firebase/database";
 
 import { LoggedOutDisplay } from '../components/LoggedOutDisplay';
 import { EditorV2Sidebar } from '../components/EditorV2Sidebar';
@@ -11,11 +13,13 @@ import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 
 import { ProjectV2Type, ItemType } from '../utils.js/types';
 import { darkColor, lightColor } from '../utils.js/colors';
+import { database } from '../utils.js/firebase';
 
 type EditorV2PropsTypes = {};
 
 export const EditorV2 = ({ }: EditorV2PropsTypes) => {
     const { user } = useAuth();
+    const { projectId: urlProjectId } = useParams()
 
     const defaultProject: ProjectV2Type = {
         createdAt: Date.now(),
@@ -29,6 +33,60 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
     }
     const [projectData, setProjectData] = useState<ProjectV2Type>({ ...defaultProject })
     const [selectedItemIndexPath, setSelectedItemIndexPath] = useState<number[] | null>(null)
+    const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
+    const [hasLoaded, setHasLoaded] = useState(urlProjectId ? false : true)
+
+    useEffect(() => {
+        fetchInitialData()
+    }, [urlProjectId, user])
+
+    useEffect(() => {
+        if (!hasLoaded) {
+            return
+        }
+
+        onSaveProject()
+    }, [hasLoaded, projectData])
+
+
+    const fetchInitialData = async () => {
+        if (!user) {
+            return
+        }
+        if (!urlProjectId) {
+            return
+        }
+
+        const userId = user.id
+        const projectRef = ref(database, `users/${userId}/projects/${urlProjectId}`)
+        const snapshot = await get(projectRef)
+        const snapshotData = snapshot.val()
+        setProjectData(snapshotData)
+        setHasLoaded(true)
+    }
+
+    const onSaveProject = () => {
+        if (!user) {
+            return
+        }
+
+        const userId = user.id
+        // const analytics = getAnalytics();
+        // setUserId(analytics, userId);
+
+        const userProjectsPagesListRef = ref(database, `users/${userId}/projects`)
+
+        const isFirstSave = !projectId
+
+        if (isFirstSave) {
+            const newProjectRef = push(userProjectsPagesListRef, projectData);
+            const newProjectId = newProjectRef.key
+            setProjectId(newProjectId)
+        } else {
+            const projectRef = ref(database, `users/${userId}/projects/${projectId}`)
+            set(projectRef, projectData)
+        }
+    }
 
     const addItem = (itemToAdd: ItemType) => {
         const newProject = { ...projectData }
@@ -70,7 +128,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
 
     const removeItemWithPathAndRetrieveRec = (path: number[], itemsTree: ItemType[]) => {
         if (path.length === 1) {
-            itemsTree.splice(path[0])
+            itemsTree.splice(path[0], 1)
             return itemsTree
         }
 

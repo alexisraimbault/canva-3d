@@ -10,13 +10,12 @@ import { Button } from 'primereact/button';
 
 import { Card } from "../components/Card";
 import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
-import { EditorBlock } from "../components/EditorBlock";
 
 import { database } from '../utils.js/firebase';
-import { IProject } from "../utils.js/types";
+import { ProjectV2Type } from "../utils.js/types";
 
 type IListingProps = {};
-type projectListingType = { [key: string]: IProject }
+type projectListingType = { [key: string]: ProjectV2Type }
 export const Listing = ({ }: IListingProps) => {
     const { user } = useAuth();
     const navigate = useNavigate()
@@ -61,7 +60,8 @@ export const Listing = ({ }: IListingProps) => {
                         {projects && Object.keys(projects).map(key => {
 
                             const projectData = projects[key]
-                            const nbBlocks = projectData?.geometries?.length || 0
+                            const nbBlocks = projectData?.items?.length || 0
+
                             return (
                                 <Card
                                     key={`lp-${key}`}
@@ -71,16 +71,6 @@ export const Listing = ({ }: IListingProps) => {
                                     <div>
                                         {`${nbBlocks} Blocks`}
                                     </div>
-                                    {nbBlocks > 0 && (
-                                        <EditorBlock
-                                            texts={projectData.texts[0]}
-                                            lights={projectData.lights[0]}
-                                            geometry={projectData.geometries[0]}
-                                            material={projectData.materials[0]}
-                                            interaction={projectData.interactions[0]}
-                                            mode="small"
-                                        />
-                                    )}
                                 </Card>
                             )
                         })}

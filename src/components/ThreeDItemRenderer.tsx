@@ -6,7 +6,7 @@ import { Vector3, Mesh } from 'three'
 
 
 import { ThreeDItemType, ILight, IGeometry, IMaterial, IInteraction } from "../utils.js/types";
-import { accentColor, darkColor_10, darkColor_60, secondaryColor1, secondaryColor3 } from "../utils.js/colors";
+import { darkColor_10, darkColor_60 } from "../utils.js/colors";
 
 type MeshWrapperProps = {
     geometryObject: ReactNode | undefined,
