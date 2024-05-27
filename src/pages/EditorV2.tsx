@@ -68,12 +68,51 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         return itemsTree
     }
 
+    const removeItemWithPathAndRetrieveRec = (path: number[], itemsTree: ItemType[]) => {
+        if (path.length === 1) {
+            itemsTree.splice(path[0])
+            return itemsTree
+        }
+
+        // if(path[0] === undefined) {
+        //     return
+        // }
+
+        // if(itemsTree[path[0]] === undefined) {
+        //     return
+        // }
+
+        // if(itemsTree[path[0]].containerData === undefined) {
+        //     return
+        // }
+
+        // if(itemsTree[path[0]].containerData === undefined) {
+        //     return
+        // }
+
+        itemsTree[path[0]].containerData!.children = removeItemWithPathAndRetrieveRec(
+            path.slice(1),
+            itemsTree[path[0]]?.containerData?.children || []
+        )
+
+        return itemsTree
+    }
+
     const editItem = (itemIndexPath: number[] | null, newItemValue: ItemType) => {
         if (itemIndexPath === null) {
             return
         }
         const newProject = { ...projectData }
         newProject.items = setItemPathValueAndRetrieveRec(itemIndexPath, newItemValue, newProject.items)
+        setProjectData(newProject)
+    }
+
+    const deleteItem = (itemIndexPath: number[] | null) => {
+        if (itemIndexPath === null) {
+            return
+        }
+        const newProject = { ...projectData }
+        newProject.items = removeItemWithPathAndRetrieveRec(itemIndexPath, newProject.items)
         setProjectData(newProject)
     }
 
@@ -101,6 +140,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                         items={projectData.items}
                         project={projectData}
                         updateProject={setProjectData}
+                        deleteItem={deleteItem}
                     />
                     <div
                         className="editorv2__page-content fullpage-wrapper"

@@ -9,10 +9,17 @@ import { ColorPicker, ColorPickerHSBType, ColorPickerRGBType } from 'primereact/
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Slider } from 'primereact/slider';
+// import { FileUpload } from 'primereact/fileupload';
+import {
+    useAuth
+} from "@kobbleio/react";
+import { ref, uploadBytes } from "firebase/storage";
 
-import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType } from "../utils.js/types";
+
+import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType, ImageType } from "../utils.js/types";
 import { orientationOptions, alignmentOptions, geometries, materials, interactions } from '../utils.js/statics'
 import { accentColor, darkColor, lightColor } from "../utils.js/colors";
+import { storage } from "../utils.js/firebase";
 
 type EditorV2SidebarProps = {
     onAddItem: (i: ItemType) => void;
@@ -22,6 +29,7 @@ type EditorV2SidebarProps = {
     setSelectedItemIndexPath: (i: number[] | null) => void;
     project: ProjectV2Type,
     updateProject: (newProject: ProjectV2Type) => void,
+    deleteItem: (itemIndexPath: number[] | null) => void;
 };
 
 export const EditorV2Sidebar = ({
@@ -30,9 +38,12 @@ export const EditorV2Sidebar = ({
     items,
     project,
     updateProject,
+    deleteItem,
     selectedItemIndexPath,
     setSelectedItemIndexPath,
 }: EditorV2SidebarProps) => {
+    const { user } = useAuth();
+
     const getSelectedItem = (itemsTree: ItemType[], path: number[]): ItemType => {
         if (path.length === 1) {
             return itemsTree[path[0]]
@@ -45,7 +56,11 @@ export const EditorV2Sidebar = ({
     const hasItemSelected = selectedItemIndexPath !== null && !isBackgroundSelection
     const selectedItem = hasItemSelected ? getSelectedItem(items, selectedItemIndexPath) : null
 
-    const getItemTypes = (isSeparatorChildRender = false) => [{
+    const onDeleteItem = () => {
+        deleteItem(selectedItemIndexPath)
+    }
+
+    const itemTypes = [{
         id: '3d',
         render: (
             <div>{"3D"}</div>
@@ -85,13 +100,12 @@ export const EditorV2Sidebar = ({
         defaultItemKey: 'containerData'
     }, {
         id: 'separator',
-        render: isSeparatorChildRender && hasItemSelected && selectedItem?.type === 'container' && selectedItem.containerData?.orientation === 'horizontal' ? (
-            <div>{"|"}</div>
-        ) : (
-            <div>{"--"}</div>
+        render: (
+            <div>{"]["}</div>
         ),
         defaultItem: {
-            size: 2,
+            width: 2,
+            height: 2,
         },
         defaultItemKey: 'separatorData'
     }, {
@@ -111,6 +125,17 @@ export const EditorV2Sidebar = ({
             action: 'email-popup',
         },
         defaultItemKey: 'buttonData'
+    }, {
+        id: 'image',
+        render: (
+            <div>{"Img"}</div>
+        ),
+        defaultItem: {
+            size: 2,
+            borderRadius: 0,
+            path: null,
+        },
+        defaultItemKey: 'imageData'
     }]
 
     const onGeometryChange = (e: DropdownChangeEvent) => {
@@ -146,7 +171,7 @@ export const EditorV2Sidebar = ({
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
 
-    const onUpdateSeparatorSize = (newSize: Nullable<number | null> | number[]) => {
+    const onUpdateSeparatorSize = (metric: string) => (newSize: Nullable<number | null> | number[]) => {
         if (!selectedItem) {
             return;
         }
@@ -155,8 +180,68 @@ export const EditorV2Sidebar = ({
         }
         const newSelectedItem: ItemType = { ...selectedItem }
         if (newSelectedItem.separatorData) {
-            newSelectedItem.separatorData.size = newSize || 5
+            if (metric === 'width') {
+                newSelectedItem.separatorData.width = newSize || 2
+            }
+            if (metric === 'height') {
+                newSelectedItem.separatorData.height = newSize || 2
+            }
         }
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateImageSize = (newSize: Nullable<number | null> | number[]) => {
+        if (!selectedItem) {
+            return;
+        }
+        if (Array.isArray(newSize)) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.imageData) {
+            newSelectedItem.imageData.size = newSize || 2
+        }
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUploadImage = async (image: File) => {
+        if (!selectedItem) {
+            return;
+        }
+
+        const userId = user?.id || undefined
+        if (!userId) {
+            return
+        }
+
+        const imageName = `${userId}_${Date.now()}`
+        const storageRef = ref(storage, `uploads/${imageName}`);
+        await uploadBytes(storageRef, image);
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.imageData) {
+            newSelectedItem.imageData.path = imageName
+        }
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onUpdateImageBorderRadius = (newBorderRadius: Nullable<number | null> | number[]) => {
+        if (!selectedItem) {
+            return;
+        }
+        if (Array.isArray(newBorderRadius)) {
+            return;
+        }
+
+        if (newBorderRadius !== 0 && !newBorderRadius) {
+            return;
+        }
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.imageData !== undefined) {
+            newSelectedItem.imageData.borderRadius = newBorderRadius
+        }
+
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
 
@@ -414,7 +499,7 @@ export const EditorV2Sidebar = ({
     const onAddContainerChild = (itemStatics: {
         id: string,
         render: ReactNode,
-        defaultItem: ThreeDItemType | TextType | ContainerType | ButtonType | SeparatorType,
+        defaultItem: ThreeDItemType | TextType | ContainerType | ButtonType | SeparatorType | ImageType,
         defaultItemKey: string
     }) => {
         if (!selectedItem) {
@@ -462,7 +547,7 @@ export const EditorV2Sidebar = ({
                     className='editorv2-sidebar__form-input-row'
                 >
 
-                    {getItemTypes(true).map(itemType => (
+                    {itemTypes.map(itemType => (
                         <div
                             className="editorv2-sidebar__container-edition-add-item-btn"
                             key={`c-it-${itemType.id}`}
@@ -629,7 +714,7 @@ export const EditorV2Sidebar = ({
                         placeholder="FFFFFF"
                     />
                 </IconField>
-                <div className="editorv2-sidebar__form-label">{"Border radius"}</div>
+                <div className="editorv2-sidebar__form-label">{"Radius"}</div>
                 <InputNumber
                     value={selectedItem?.buttonData?.borderRadius || 0}
                     onValueChange={(e) => onUpdateBtnBorderRadius(e.value)}
@@ -642,6 +727,54 @@ export const EditorV2Sidebar = ({
         )
     }
 
+    const renderImageCustomisation = () => {
+        if (selectedItem?.type !== 'image') {
+            return
+        }
+
+        return (
+            <div className="editorv2-sidebar__3d-form-container">
+                {selectedItem.imageData?.path === null && (
+                    <input
+                        type="file"
+                        accept="image/png, image/gif, image/jpeg"
+                        onChange={(e) => {
+                            if (e.target.files !== null) {
+                                onUploadImage(e.target.files[0])
+                            }
+                        }}
+                    />
+                )}
+                <div className="editorv2-sidebar__form-label">{"Size"}</div>
+                <InputNumber
+                    value={selectedItem.imageData?.size}
+                    onValueChange={(e) => onUpdateImageSize(e.value)}
+                // className='editorv2-sidebar__form-input-container'
+                />
+                <Slider
+                    value={selectedItem.imageData?.size}
+                    onChange={(e) => onUpdateImageSize(e.value)}
+                    min={1}
+                    max={100}
+                    className='editorv2-sidebar__form-input-slider'
+                />
+                <div className="editorv2-sidebar__form-label">{"Radius"}</div>
+                <InputNumber
+                    value={selectedItem.imageData?.borderRadius}
+                    onValueChange={(e) => onUpdateImageBorderRadius(e.value)}
+                // className='editorv2-sidebar__form-input-container'
+                />
+                <Slider
+                    value={selectedItem.imageData?.borderRadius}
+                    onChange={(e) => onUpdateImageBorderRadius(e.value)}
+                    min={1}
+                    max={100}
+                    className='editorv2-sidebar__form-input-slider'
+                />
+            </div>
+        )
+    }
+
     const renderSeparatorCustomisation = () => {
         if (selectedItem?.type !== 'separator') {
             return
@@ -649,15 +782,28 @@ export const EditorV2Sidebar = ({
 
         return (
             <div className="editorv2-sidebar__3d-form-container">
-                <div className="editorv2-sidebar__form-label">{"Size"}</div>
+                <div className="editorv2-sidebar__form-label">{"Height"}</div>
                 <InputNumber
-                    value={selectedItem.separatorData?.size}
-                    onValueChange={(e) => onUpdateSeparatorSize(e.value)}
+                    value={selectedItem.separatorData?.height}
+                    onValueChange={(e) => onUpdateSeparatorSize('height')(e.value)}
                 // className='editorv2-sidebar__form-input-container'
                 />
                 <Slider
-                    value={selectedItem.separatorData?.size}
-                    onChange={(e) => onUpdateSeparatorSize(e.value)}
+                    value={selectedItem.separatorData?.height}
+                    onChange={(e) => onUpdateSeparatorSize('height')(e.value)}
+                    min={1}
+                    max={100}
+                    className='editorv2-sidebar__form-input-slider'
+                />
+                <div className="editorv2-sidebar__form-label">{"Width"}</div>
+                <InputNumber
+                    value={selectedItem.separatorData?.width}
+                    onValueChange={(e) => onUpdateSeparatorSize('width')(e.value)}
+                // className='editorv2-sidebar__form-input-container'
+                />
+                <Slider
+                    value={selectedItem.separatorData?.width}
+                    onChange={(e) => onUpdateSeparatorSize('width')(e.value)}
                     min={1}
                     max={100}
                     className='editorv2-sidebar__form-input-slider'
@@ -793,7 +939,7 @@ export const EditorV2Sidebar = ({
     return (
         <div className="editorv2-sidebar__wrapper">
             <div className="editorv2-sidebar__inner-btns-container">
-                {getItemTypes().map(itemType => (
+                {itemTypes.map(itemType => (
                     <div
                         className="editorv2-sidebar__add-item-btn"
                         key={`it-${itemType.id}`}
@@ -814,12 +960,18 @@ export const EditorV2Sidebar = ({
                         {selectedItem && selectedItem.type === 'container' && renderContainerCustomisation()}
                         {selectedItem && selectedItem.type === 'button' && renderButtonCustomisation()}
                         {selectedItem && selectedItem.type === 'separator' && renderSeparatorCustomisation()}
+                        {selectedItem && selectedItem.type === 'image' && renderImageCustomisation()}
                     </div>
                     {/* <Button
                         label="Close"
                         onClick={() => setSelectedItemIndexPath(null)}
                         className="editorv2-sidebar__customisatino-close-btn"
                     /> */}
+                    <Button
+                        label="Delete"
+                        onClick={() => onDeleteItem()}
+                        className="editorv2-sidebar__customisatino-delete-btn"
+                    />
                 </div>
             )}
             {isBackgroundSelection && (
@@ -834,6 +986,14 @@ export const EditorV2Sidebar = ({
                     />
                 </div>
             )}
+            {/* <FileUpload
+                mode="basic"
+                name="Test"
+                url="/api/upload"
+                accept="image/*"
+                maxFileSize={1000000}
+                onUpload={onUpload}
+            /> */}
         </div >
     );
 }

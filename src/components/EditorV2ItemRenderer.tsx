@@ -1,9 +1,11 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useState, useEffect } from "react";
+import { ref, getDownloadURL } from "firebase/storage";
 
 import { ThreeDItemRenderer } from "./ThreeDItemRenderer";
 
-import { ItemType, ThreeDItemType, TextType, ContainerType, ButtonType, SeparatorType } from "../utils.js/types";
+import { ItemType, ThreeDItemType, TextType, ContainerType, ButtonType, SeparatorType, ImageType } from "../utils.js/types";
 import { accentColor, darkColor, lightColor } from "../utils.js/colors";
+import { storage } from "../utils.js/firebase";
 
 interface EditorV2ItemRendererProps {
     item: ItemType;
@@ -23,9 +25,27 @@ export const EditorV2ItemRenderer = ({
     itemIndexPath,
 }: EditorV2ItemRendererProps) => {
     const [isItemHovered, setIsItemHovered] = useState(false)
+
     const toggleDetectOver = (isOvered: boolean) => {
         setIsItemHovered(isOvered)
     }
+
+
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    useEffect(() => {
+        if (item.type === 'image' && item.imageData?.path !== null) {
+            fetchImage()
+        }
+    }, [item])
+
+    const fetchImage = async () => {
+
+        const imageName = item.imageData?.path
+        const imagePath = `uploads/${imageName}`
+        const imageUrlRes = await getDownloadURL(ref(storage, imagePath));
+        setImageUrl(imageUrlRes)
+    }
+
     const render3dItem = (itemData: ThreeDItemType | undefined) => {
         return (
             <ThreeDItemRenderer
@@ -38,10 +58,50 @@ export const EditorV2ItemRenderer = ({
         return (
             <div
                 style={{
-                    width: `${itemData?.size || 20}vw`,
-                    height: `${itemData?.size || 20}vw`,
+                    width: `${itemData?.width || 20}vw`,
+                    height: `${itemData?.height || 20}vw`,
                 }}
             >
+            </div>
+        )
+    }
+
+    const renderImageItem = (itemData: ImageType | undefined) => {
+        console.log({ imageUrl })
+
+        return itemData?.path === null ? (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: `${itemData?.size || 2}vw`,
+                    height: `${itemData?.size || 2}vw`,
+                    textAlign: 'center'
+                }}
+            >
+                {'I'}
+            </div>
+        ) : imageUrl !== null ? (
+            <img
+                style={{
+                    borderRadius: `${itemData?.borderRadius}%`
+                }}
+                src={imageUrl}
+                width={`${itemData?.size ? itemData?.size * 10 : 20}vw`}
+            />
+        ) : (
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: `${itemData?.size || 2}vw`,
+                    height: `${itemData?.size || 2}vw`,
+                    textAlign: 'center'
+                }}
+            >
+                {'...'}
             </div>
         )
     }
@@ -106,6 +166,9 @@ export const EditorV2ItemRenderer = ({
             if (itemData?.align === 'end') {
                 alignmentCSS.justifyContent = 'flex-end';
             }
+            if (itemData?.align === 'spaced') {
+                alignmentCSS.justifyContent = 'space-between';
+            }
         }
 
         return (
@@ -154,6 +217,9 @@ export const EditorV2ItemRenderer = ({
         }
         if (item.type === 'separator') {
             return renderSeparatorItem(item.separatorData)
+        }
+        if (item.type === 'image') {
+            return renderImageItem(item.imageData)
         }
     }
 

@@ -22,6 +22,10 @@ export const alignmentOptions = [
         label: 'End',
         value: 'end'
     },
+    {
+        label: 'Spaced',
+        value: 'spaced'
+    },
 ]
 
 export const geometries = [

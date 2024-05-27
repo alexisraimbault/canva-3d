@@ -74,7 +74,14 @@ export type ContainerType = {
 }
 
 export type SeparatorType = {
+    width: number,
+    height: number,
+}
+
+export type ImageType = {
     size: number,
+    borderRadius: number,
+    path: string | null,
 }
 
 // export type ItemType<T> = {
@@ -85,6 +92,7 @@ export type ItemType = {
     containerData?: ContainerType,
     buttonData?: ButtonType,
     separatorData?: SeparatorType,
+    imageData?: ImageType,
     // data: T extends ThreeDItemType ? ThreeDItemType :
     // T extends TextType ? TextType : ContainerType;
 }

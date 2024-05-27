@@ -487,7 +487,7 @@ body {
     margin-left: 60px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    // align-items: center;
     min-height: 100vh;
     // removing width for sidebar and .fullpage-wrapper padding
     width: calc(100vw - 60px - 80px);
