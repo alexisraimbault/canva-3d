@@ -12,8 +12,8 @@ import { EditorV2Sidebar } from '../components/EditorV2Sidebar';
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 
 import { ProjectV2Type, ItemType } from '../utils.js/types';
-import { darkColor, lightColor } from '../utils.js/colors';
 import { database } from '../utils.js/firebase';
+import { defaultProject } from '../utils.js/statics';
 
 type EditorV2PropsTypes = {};
 
@@ -21,20 +21,11 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
     const { user } = useAuth();
     const { projectId: urlProjectId } = useParams()
 
-    const defaultProject: ProjectV2Type = {
-        createdAt: Date.now(),
-        name: '',
-        published: false,
-        publishTime: null,
-        customDomain: '',
-        items: [],
-        globalBgColor: lightColor,
-        globalDefaultTextColor: darkColor,
-    }
     const [projectData, setProjectData] = useState<ProjectV2Type>({ ...defaultProject })
     const [selectedItemIndexPath, setSelectedItemIndexPath] = useState<number[] | null>(null)
     const [projectId, setProjectId] = useState<string | null>(urlProjectId ? urlProjectId : null)
     const [hasLoaded, setHasLoaded] = useState(urlProjectId ? false : true)
+    const [isNameAlreadyTaken, setIsNameAlreadyTaken] = useState(false)
 
     useEffect(() => {
         fetchInitialData()
@@ -86,6 +77,39 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
             const projectRef = ref(database, `users/${userId}/projects/${projectId}`)
             set(projectRef, projectData)
         }
+    }
+
+    const onPublish = async () => {
+        const userId = user?.id || undefined
+        if (!userId || !projectId) {
+            return
+        }
+        setIsNameAlreadyTaken(false)
+
+        // Checking name availability
+        const projectsListRef = ref(database, `publishNames`)
+        // TODO query with expression where key = input
+        const snapshot = await get(projectsListRef)
+        const snapshotData = snapshot.val()
+        const allNames = snapshotData === null ? [] : Object.keys(snapshotData).map(item => item.toLowerCase())
+        const isTaken = allNames.includes(projectData.name.toLowerCase())
+
+        if (isTaken) {
+            setIsNameAlreadyTaken(true)
+            return
+        }
+
+        const projectPublishNameRef = ref(database, `publishNames/${projectData.name}`)
+        const dataToWrite = {
+            projectId,
+            userId,
+        }
+        set(projectPublishNameRef, dataToWrite)
+
+        const newProjectData = { ...projectData }
+        newProjectData.published = true
+        newProjectData.publishTime = Date.now()
+        setProjectData(newProjectData)
     }
 
     const addItem = (itemToAdd: ItemType) => {
@@ -199,6 +223,8 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                         project={projectData}
                         updateProject={setProjectData}
                         deleteItem={deleteItem}
+                        onPublish={onPublish}
+                        isNameAlreadyTaken={isNameAlreadyTaken}
                     />
                     <div
                         className="editorv2__page-content fullpage-wrapper"

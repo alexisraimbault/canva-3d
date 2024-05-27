@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-import { ref, push, get } from "firebase/database";
-import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-
-import { EditorBlock } from "../components/EditorBlock";
+// import { ref, push, get } from "firebase/database";
+import { ref, get } from "firebase/database";
+// import { Dialog } from 'primereact/dialog';
+// import { InputText } from 'primereact/inputtext';
+// import { Button } from 'primereact/button';
 
 import { database } from '../utils.js/firebase';
-import { ITexts, ILight, IGeometry, IMaterial, IInteraction, IPublishStatus } from "../utils.js/types";
+import { defaultProject } from '../utils.js/statics';
+import { ProjectV2Type } from "../utils.js/types";
+import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 
 type IProjectProps = {
     projectNameProps?: string;
@@ -17,26 +18,12 @@ type IProjectProps = {
 export const Project = ({ projectNameProps }: IProjectProps) => {
     const { projectId: urlProjectId, userId: urlUserId, projectName } = useParams()
 
-    const defaultLight: ILight[] = [{ type: 'ambient' }, { type: 'directional' }]
-    const defaultGeometry: IGeometry = { type: 'box' }
-    const defaultMaterial: IMaterial = { type: 'standard' }
-    const defaultInteraction: IInteraction = { type: 'timer' }
-    const defaultTexts: ITexts = { title: '', subtitle: '', CTALabel: '' }
-    const defaultPublishStatus: IPublishStatus = { name: '', published: false, publishTime: null }
-
-    // const [editingBlock, setEditingBlock] = useState(0)
-    const [lights, setLights] = useState([[...defaultLight]])
-    const [geometries, setGeometries] = useState([{ ...defaultGeometry }])
-    const [materials, setMaterials] = useState([{ ...defaultMaterial }])
-    const [interactions, setInteractions] = useState([{ ...defaultInteraction }])
-    const [texts, setTexts] = useState([{ ...defaultTexts }])
-    const [projectPublishData, setProjectPublishData] = useState(defaultPublishStatus)
-    // const [customDomain, setCustomDomain] = useState('')    
+    const [projectData, setProjectData] = useState<ProjectV2Type>(defaultProject)
     const [hasLoaded, setHasLoaded] = useState(false)
+    console.log({ hasLoaded })
 
-    const [emailPopupTexts, setEmailPopupTexts] = useState(defaultTexts)
-    const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
-    const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
+    // const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
+    // const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
 
     useEffect(() => {
         fetchInitialData()
@@ -76,67 +63,54 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         const projectRef = ref(database, `users/${tmpUrlUserId}/projects/${tmpUrlProjectId}`)
         const snapshot = await get(projectRef)
         const snapshotData = snapshot.val()
-        setLights(snapshotData?.lights || [...defaultLight])
-        setGeometries(snapshotData?.geometries || [{ ...defaultGeometry }])
-        setMaterials(snapshotData?.materials || [{ ...defaultMaterial }])
-        setInteractions(snapshotData?.interactions || [{ ...defaultInteraction }])
-        setTexts(snapshotData?.texts || [{ ...defaultTexts }])
-        setProjectPublishData(snapshotData?.publishData || defaultPublishStatus)
-        // setCustomDomain(snapshotData?.customDomain || '')
+        setProjectData(snapshotData)
         setHasLoaded(true)
     }
 
-    const onAddEmail = () => {
-        if (!hasLoaded) {
-            return
-        }
+    // const onAddEmail = () => {
+    //     if (!hasLoaded) {
+    //         return
+    //     }
 
-        if (!urlProjectId || !emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
-            return
-        }
+    //     if (!urlProjectId || !emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
+    //         return
+    //     }
 
-        pushEmailToProject(emailGatherPopupInputText, urlProjectId)
-    }
+    //     pushEmailToProject(emailGatherPopupInputText, urlProjectId)
+    // }
 
-    const pushEmailToProject = (email: string, urlProjectId: string) => {
-        if (!urlUserId) {
-            return
-        }
+    // const pushEmailToProject = (email: string, urlProjectId: string) => {
+    //     if (!urlUserId) {
+    //         return
+    //     }
 
-        const projectEmailRef = ref(database, `emails/${urlUserId}/${urlProjectId}/list`)
-        const emailData = {
-            email,
-            createdAt: Date.now(),
-        }
-        push(projectEmailRef, emailData);
-        // const newEmail = push(projectEmailRef, emailData);
-        // const newEmailId = newEmail.key
-        // console.log({ newEmailId })
-    }
+    //     const projectEmailRef = ref(database, `emails/${urlUserId}/${urlProjectId}/list`)
+    //     const emailData = {
+    //         email,
+    //         createdAt: Date.now(),
+    //     }
+    //     push(projectEmailRef, emailData);
+    // }
 
-    const isPublished = projectPublishData.name &&
-        projectPublishData.name.length > 0 &&
-        projectPublishData.published
+    const isPublished = projectData.name &&
+        projectData.name.length > 0 &&
+        projectData.published
 
     return (
         <div className='project-view__wrapper'>
             {isPublished && (
-                <div className='project-view__feed-container'>
-                    {geometries && geometries.map((geometry, geometryIndex) => {
-
+                <div
+                    className='project-view__page-content fullpage-wrapper'
+                    style={{
+                        backgroundColor: `#${projectData.globalBgColor}`,
+                    }}
+                >
+                    {projectData.items.map((projectItem, projectItemIndex) => {
                         return (
-                            <EditorBlock
-                                key={`bl-${geometryIndex}`}
-                                texts={texts[geometryIndex]}
-                                lights={lights[geometryIndex]}
-                                geometry={geometry}
-                                material={materials[geometryIndex]}
-                                interaction={interactions[geometryIndex]}
-                                openEmailPopup={() => {
-                                    setIsEmailGatherPopupVisible(true)
-                                    setEmailPopupTexts(texts[geometryIndex])
-                                }}
-                                mode="full"
+                            <EditorV2ItemRenderer
+                                key={`item-${projectItemIndex}`}
+                                item={projectItem}
+                                isLive
                             />
                         )
                     })}
@@ -144,10 +118,15 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
             )}
             {!isPublished && (
                 <div className="project-view__unpublished-container">
-                    {"This project is not published yet. \n If you are the project owner, you can log in to your account and publish the project \n If you just published the project, wait a few minutes \n"}
+                    <p>{"This project is not published yet."}</p>
+                    <br />
+                    <p>{"If you are the project owner, you can log in to your account and publish the project."}</p>
+                    <br />
+                    <p>{"If you just published the project, wait a few minutes."}</p>
                 </div>
             )}
-            <Dialog
+            {/* TODO email popup gathering */}
+            {/* <Dialog
                 header={null}
                 visible={isEmailGatherPopupVisible}
                 style={{ width: '600px' }}
@@ -169,7 +148,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                         />
                     </div>
                 </div>
-            </Dialog>
+            </Dialog> */}
         </div>
     );
 }

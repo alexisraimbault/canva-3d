@@ -30,6 +30,8 @@ type EditorV2SidebarProps = {
     project: ProjectV2Type,
     updateProject: (newProject: ProjectV2Type) => void,
     deleteItem: (itemIndexPath: number[] | null) => void;
+    onPublish: () => void;
+    isNameAlreadyTaken: boolean;
 };
 
 export const EditorV2Sidebar = ({
@@ -41,6 +43,8 @@ export const EditorV2Sidebar = ({
     deleteItem,
     selectedItemIndexPath,
     setSelectedItemIndexPath,
+    onPublish,
+    isNameAlreadyTaken,
 }: EditorV2SidebarProps) => {
     const { user } = useAuth();
 
@@ -862,6 +866,12 @@ export const EditorV2Sidebar = ({
         )
     }
 
+    const updateProjectName = (newName: string) => {
+        const newProject = { ...project }
+        newProject.name = newName
+        updateProject(newProject)
+    }
+
     const updateGlobalBgColor = (color: string | null | undefined | ColorPickerRGBType | ColorPickerHSBType) => {
         if (color === null) {
             return
@@ -932,6 +942,38 @@ export const EditorV2Sidebar = ({
                         placeholder="FFFFFF"
                     />
                 </IconField>
+                {(!project.published) && (
+                    <>
+                        <IconField
+                            iconPosition="left"
+                            className='editorv2-sidebar__form-input-container'
+                        >
+                            <InputIcon className="pi pi-save"> </InputIcon>
+                            <InputText
+                                value={project.name}
+                                onChange={(e) => updateProjectName(e.target.value)}
+                                placeholder="my_project"
+                            />
+                        </IconField>
+                        <Button
+                            label="Publish"
+                            onClick={() => onPublish()}
+                        // className="editorv2-sidebar__customisatino-delete-btn"
+                        />
+                        {isNameAlreadyTaken && (
+                            <div className="editorv2-sidebar__error-message">
+                                {"This name is already taken, please choose another one"}
+                            </div>
+                        )}
+                    </>
+                )}
+                {project.published && (
+                    <>
+                        <div className="editorv2-sidebar__publish-link">
+                            {`${project.name}.canva.com`}
+                        </div>
+                    </>
+                )}
             </div>
         )
     }

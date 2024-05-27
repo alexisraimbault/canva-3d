@@ -230,6 +230,13 @@ body {
 }
 
 .project-view {
+  &__page-content {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
   &__email-popup-content {
     margin-top: -80px;
@@ -612,6 +619,10 @@ body {
 
     &--selected {
       border: solid 1px $secondaryColor1 !important;
+    }
+
+    &--live {
+      border: none !important;
     }
   }
 

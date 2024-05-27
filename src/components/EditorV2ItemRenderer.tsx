@@ -9,20 +9,22 @@ import { storage } from "../utils.js/firebase";
 
 interface EditorV2ItemRendererProps {
     item: ItemType;
-    onSelectItem: () => void;
-    itemIndexPath: number[];
-    relativeSelectedItemIndexPath: number[];
-    isSelected: boolean;
-    setSelectedItemIndexPath: (n: number[]) => void;
+    onSelectItem?: () => void;
+    itemIndexPath?: number[];
+    relativeSelectedItemIndexPath?: number[];
+    isSelected?: boolean;
+    setSelectedItemIndexPath?: (n: number[]) => void;
+    isLive?: boolean;
 };
 
 export const EditorV2ItemRenderer = ({
     item,
-    onSelectItem,
-    setSelectedItemIndexPath,
-    relativeSelectedItemIndexPath,
-    isSelected,
-    itemIndexPath,
+    onSelectItem = () => { },
+    setSelectedItemIndexPath = () => { },
+    relativeSelectedItemIndexPath = [],
+    isSelected = false,
+    itemIndexPath = [],
+    isLive = false,
 }: EditorV2ItemRendererProps) => {
     const [isItemHovered, setIsItemHovered] = useState(false)
 
@@ -195,6 +197,7 @@ export const EditorV2ItemRenderer = ({
                             setSelectedItemIndexPath={setSelectedItemIndexPath}
                             relativeSelectedItemIndexPath={newRelativeSelectedItemIndexPath}
                             isSelected={newRelativeSelectedItemIndexPath?.length === 1 && newRelativeSelectedItemIndexPath[0] === chindIndex}
+                            isLive={isLive}
                         />
                     )
                 })}
@@ -234,6 +237,7 @@ export const EditorV2ItemRenderer = ({
             className={`
                 editor-v2-item__wrapper
                 ${isSelected ? ' editor-v2-item__wrapper--selected' : ''}
+                ${isLive ? ' editor-v2-item__wrapper--live' : ''}
             `}
             onClick={onElementClickWrapper}
         >

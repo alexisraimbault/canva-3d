@@ -1,3 +1,6 @@
+import { darkColor, lightColor } from "./colors"
+import { ProjectV2Type } from "./types"
+
 export const orientationOptions = [
     {
         label: 'Horizontal',
@@ -129,3 +132,14 @@ export const interactions = [
         value: 'scroll',
     },
 ]
+
+export const defaultProject: ProjectV2Type = {
+    createdAt: Date.now(),
+    name: '',
+    published: false,
+    publishTime: null,
+    customDomain: '',
+    items: [],
+    globalBgColor: lightColor,
+    globalDefaultTextColor: darkColor,
+}
