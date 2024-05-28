@@ -1071,7 +1071,7 @@ export const EditorV2Sidebar = ({
                     <>
                         <div className="editorv2-sidebar__form-label">{"Published at"}</div>
                         <div className="editorv2-sidebar__publish-link">
-                            {`${project.name}.canva.com`}
+                            {`${project.name}.3d-pages.com`}
                         </div>
                     </>
                 )}
