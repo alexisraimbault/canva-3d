@@ -252,8 +252,8 @@ export const EditorV2ItemRenderer = ({
             `}
             style={{
                 padding: `${item?.spacing?.top || 0}px ${item?.spacing?.right || 0}px ${item?.spacing?.bottom || 0}px ${item?.spacing?.left || 0}px`,
-                ...(item.type === 'container' && item?.containerData?.orientation === 'horizontal' ?
-                    { width: '100%' } : {}
+                ...(item.type === 'container' && item?.containerData?.align === 'center' ?
+                    { alignSelf: 'center' } : {}
                 ),
             }}
             onClick={onElementClickWrapper}
