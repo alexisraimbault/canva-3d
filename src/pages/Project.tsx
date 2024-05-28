@@ -19,7 +19,6 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
 
     const [projectData, setProjectData] = useState<ProjectV2Type>(defaultProject)
     const [hasLoaded, setHasLoaded] = useState(false)
-    console.log({ hasLoaded })
 
     const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
     const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')

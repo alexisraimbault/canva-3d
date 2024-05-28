@@ -34,7 +34,6 @@ export const EditorV2ItemRenderer = ({
         setIsItemHovered(isOvered)
     }
 
-
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     useEffect(() => {
         if (item.type === 'image' && item.imageData?.path !== null) {
@@ -190,7 +189,7 @@ export const EditorV2ItemRenderer = ({
                     display: 'flex',
                     ...(isVertical ?
                         { flexDirection: 'column' } :
-                        {}
+                        { width: '100%' }
                     ),
                     ...alignmentCSS,
                     flexWrap: 'wrap',
@@ -251,6 +250,12 @@ export const EditorV2ItemRenderer = ({
                 ${isSelected ? ' editor-v2-item__wrapper--selected' : ''}
                 ${isLive ? ' editor-v2-item__wrapper--live' : ''}
             `}
+            style={{
+                padding: `${item?.spacing?.top || 0}px ${item?.spacing?.right || 0}px ${item?.spacing?.bottom || 0}px ${item?.spacing?.left || 0}px`,
+                ...(item.type === 'container' && item?.containerData?.orientation === 'horizontal' ?
+                    { width: '100%' } : {}
+                ),
+            }}
             onClick={onElementClickWrapper}
         >
             {renderItem(item)}

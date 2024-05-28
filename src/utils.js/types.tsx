@@ -93,6 +93,12 @@ export type ItemType = {
     buttonData?: ButtonType,
     separatorData?: SeparatorType,
     imageData?: ImageType,
+    spacing: {
+        top: number,
+        bottom: number,
+        left: number,
+        right: number,
+    }
     // data: T extends ThreeDItemType ? ThreeDItemType :
     // T extends TextType ? TextType : ContainerType;
 }

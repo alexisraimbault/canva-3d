@@ -73,6 +73,7 @@ const Home = () => {
                         </PricingLink>
                     </div>
                 </SignedIn>
+                {/* <a href="https://fr.freepik.com/vecteurs-libre/collection-formes-geometriques-glitch_4057925.htm#fromView=search&page=4&position=18&uuid=117043cb-8f60-418b-8a72-0be82c67a523">Image de freepik</a> */}
             </div>
         );
 };

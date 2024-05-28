@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
@@ -47,6 +47,8 @@ export const EditorV2Sidebar = ({
     isNameAlreadyTaken,
 }: EditorV2SidebarProps) => {
     const { user } = useAuth();
+
+    const [isSpacingOptionDisplayed, setIsSpacingOptionDisplayed] = useState(false)
 
     const getSelectedItem = (itemsTree: ItemType[], path: number[]): ItemType => {
         if (path.length === 1) {
@@ -292,6 +294,38 @@ export const EditorV2Sidebar = ({
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
 
+    const onUpdateSpacing = (spacingDirection: string) => (newSpacing: Nullable<number | null> | number[]) => {
+        if (!selectedItem) {
+            return;
+        }
+
+        if (newSpacing !== 0 && !newSpacing) {
+            return;
+        }
+
+        if (Array.isArray(newSpacing)) {
+            return;
+        }
+
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.spacing !== undefined) {
+            if (spacingDirection === 'top') {
+                newSelectedItem.spacing.top = newSpacing
+            }
+            if (spacingDirection === 'bottom') {
+                newSelectedItem.spacing.bottom = newSpacing
+            }
+            if (spacingDirection === 'left') {
+                newSelectedItem.spacing.left = newSpacing
+            }
+            if (spacingDirection === 'right') {
+                newSelectedItem.spacing.right = newSpacing
+            }
+        }
+
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
     const onToggleBoldText = () => {
         if (!selectedItem) {
             return;
@@ -515,6 +549,12 @@ export const EditorV2Sidebar = ({
             newSelectedItem.containerData.children.push({
                 type: itemStatics.id,
                 [itemStatics.defaultItemKey]: itemStatics.defaultItem,
+                spacing: {
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                }
             })
         }
 
@@ -524,6 +564,14 @@ export const EditorV2Sidebar = ({
             setSelectedItemIndexPath(newSelectedItemIndexPath)
         }
     }
+
+    const renderFullWidthInputElement = (element: ReactNode, isUnspaced: boolean = false) => (
+        <div
+            className={`editorv2-sidebar__form-input-container${isUnspaced ? ' editorv2-sidebar__form-input-container--unspaced' : ''}`}
+        >
+            {element}
+        </div>
+    )
 
     const renderContainerCustomisation = () => {
         if (selectedItem?.type !== 'container') {
@@ -537,14 +585,14 @@ export const EditorV2Sidebar = ({
                     value={selectedItem.containerData?.orientation}
                     onChange={(e) => onOrientationChange(e.value)}
                     options={orientationOptions}
-                    className='editorv2-sidebar__form-input-container'
+                    className='editorv2-sidebar__form-spaced'
                 />
                 <div className="editorv2-sidebar__form-label">{"Alignment"}</div>
                 <SelectButton
                     value={selectedItem.containerData?.align}
                     onChange={(e) => onAlignmentChange(e.value)}
                     options={alignmentOptions}
-                    className='editorv2-sidebar__form-input-container'
+                    className='editorv2-sidebar__form-spaced'
                 />
                 <div className="editorv2-sidebar__form-label">{"Add Children"}</div>
                 <div
@@ -572,18 +620,22 @@ export const EditorV2Sidebar = ({
         return (
             <div className="editorv2-sidebar__3d-form-container">
                 <div className="editorv2-sidebar__form-label">{"Content"}</div>
-                <InputText
-                    value={selectedItem?.textData?.content || ''}
-                    onChange={(e) => onUpdateTextContent(e.target.value)}
-                    placeholder="Content"
-                    className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputText
+                        value={selectedItem?.textData?.content || ''}
+                        onChange={(e) => onUpdateTextContent(e.target.value)}
+                        placeholder="Content"
+                        className='editorv2-sidebar__form-input'
+                    />
+                )}
                 <div className="editorv2-sidebar__form-label">{"Size"}</div>
-                <InputNumber
-                    value={selectedItem?.textData?.size || 26}
-                    onValueChange={(e) => onUpdateTextSize(e.value)}
-                    className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem?.textData?.size || 26}
+                        onValueChange={(e) => onUpdateTextSize(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />
+                )}
                 <div className="editorv2-sidebar__form-label">{"Decoration"}</div>
                 <div
                     className={`
@@ -600,17 +652,20 @@ export const EditorV2Sidebar = ({
                     onChange={(e) => onUpdateTextColor(e.value)}
                     className='editorv2-sidebar__form-input-container'
                 />
-                <IconField
-                    iconPosition="left"
-                    className='editorv2-sidebar__form-input-container'
-                >
-                    <InputIcon className="pi pi-hashtag"> </InputIcon>
-                    <InputText
-                        value={selectedItem?.textData?.color}
-                        onChange={(e) => onUpdateTextColor(e.target.value)}
-                        placeholder="FFFFFF"
-                    />
-                </IconField>
+                {renderFullWidthInputElement(
+                    <IconField
+                        iconPosition="left"
+                        className='editorv2-sidebar__form-input-container'
+                    >
+                        <InputIcon className="pi pi-hashtag"> </InputIcon>
+                        <InputText
+                            value={selectedItem?.textData?.color}
+                            onChange={(e) => onUpdateTextColor(e.target.value)}
+                            placeholder="FFFFFF"
+                            className='editorv2-sidebar__form-input'
+                        />
+                    </IconField>
+                )}
             </div>
         )
     }
@@ -629,17 +684,20 @@ export const EditorV2Sidebar = ({
                     onChange={(e) => onUpdateBtnBgColor(e.value)}
                     className='editorv2-sidebar__form-input-container'
                 />
-                <IconField
-                    iconPosition="left"
-                    className='editorv2-sidebar__form-input-container'
-                >
-                    <InputIcon className="pi pi-hashtag"> </InputIcon>
-                    <InputText
-                        value={selectedItem?.buttonData?.backgroundColor}
-                        onChange={(e) => onUpdateBtnBgColor(e.target.value)}
-                        placeholder="FFFFFF"
-                    />
-                </IconField>
+                {renderFullWidthInputElement(
+                    <IconField
+                        iconPosition="left"
+                        className='editorv2-sidebar__form-input-container'
+                    >
+                        <InputIcon className="pi pi-hashtag"> </InputIcon>
+                        <InputText
+                            value={selectedItem?.buttonData?.backgroundColor}
+                            onChange={(e) => onUpdateBtnBgColor(e.target.value)}
+                            placeholder="FFFFFF"
+                            className='editorv2-sidebar__form-input'
+                        />
+                    </IconField>
+                )}
                 <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
                 <ColorPicker
                     format="hex"
@@ -647,30 +705,37 @@ export const EditorV2Sidebar = ({
                     onChange={(e) => onUpdateBtnHoverBgColor(e.value)}
                     className='editorv2-sidebar__form-input-container'
                 />
-                <IconField
-                    iconPosition="left"
-                    className='editorv2-sidebar__form-input-container'
-                >
-                    <InputIcon className="pi pi-hashtag"> </InputIcon>
-                    <InputText
-                        value={selectedItem?.buttonData?.hoverBackgroundColor}
-                        onChange={(e) => onUpdateBtnHoverBgColor(e.target.value)}
-                        placeholder="FFFFFF"
-                    />
-                </IconField>
+                {renderFullWidthInputElement(
+                    <IconField
+                        iconPosition="left"
+                        className='editorv2-sidebar__form-input-container'
+                    >
+                        <InputIcon className="pi pi-hashtag"> </InputIcon>
+                        <InputText
+                            value={selectedItem?.buttonData?.hoverBackgroundColor}
+                            onChange={(e) => onUpdateBtnHoverBgColor(e.target.value)}
+                            placeholder="FFFFFF"
+                            className='editorv2-sidebar__form-input'
+                        />
+                    </IconField>
+                )}
                 <div className="editorv2-sidebar__form-label">{"Label"}</div>
-                <InputText
-                    value={selectedItem?.buttonData?.content || ''}
-                    onChange={(e) => onUpdateBtnTextContent(e.target.value)}
-                    placeholder="Content"
-                    className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputText
+                        value={selectedItem?.buttonData?.content || ''}
+                        onChange={(e) => onUpdateBtnTextContent(e.target.value)}
+                        placeholder="Content"
+                        className='editorv2-sidebar__form-input'
+                    />
+                )}
                 <div className="editorv2-sidebar__form-label">{"Text size"}</div>
-                <InputNumber
-                    value={selectedItem?.buttonData?.textSize || 26}
-                    onValueChange={(e) => onUpdateBtnTextSize(e.value)}
-                    className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem?.buttonData?.textSize || 26}
+                        onValueChange={(e) => onUpdateBtnTextSize(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />
+                )}
                 <div className="editorv2-sidebar__form-label">{"Text decoration"}</div>
                 <div
                     className={`
@@ -688,17 +753,20 @@ export const EditorV2Sidebar = ({
                     onChange={(e) => onUpdateBtnTextColor(e.value)}
                     className='editorv2-sidebar__form-input-container'
                 />
-                <IconField
-                    iconPosition="left"
-                    className='editorv2-sidebar__form-input-container'
-                >
-                    <InputIcon className="pi pi-hashtag"> </InputIcon>
-                    <InputText
-                        value={selectedItem?.buttonData?.textColor}
-                        onChange={(e) => onUpdateBtnTextColor(e.target.value)}
-                        placeholder="FFFFFF"
-                    />
-                </IconField>
+                {renderFullWidthInputElement(
+                    <IconField
+                        iconPosition="left"
+                        className='editorv2-sidebar__form-input-container'
+                    >
+                        <InputIcon className="pi pi-hashtag"> </InputIcon>
+                        <InputText
+                            value={selectedItem?.buttonData?.textColor}
+                            onChange={(e) => onUpdateBtnTextColor(e.target.value)}
+                            placeholder="FFFFFF"
+                            className='editorv2-sidebar__form-input'
+                        />
+                    </IconField>
+                )}
                 <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
                 <ColorPicker
                     format="hex"
@@ -706,17 +774,20 @@ export const EditorV2Sidebar = ({
                     onChange={(e) => onUpdateBtnHoveredTextColor(e.value)}
                     className='editorv2-sidebar__form-input-container'
                 />
-                <IconField
-                    iconPosition="left"
-                    className='editorv2-sidebar__form-input-container'
-                >
-                    <InputIcon className="pi pi-hashtag"> </InputIcon>
-                    <InputText
-                        value={selectedItem?.buttonData?.hoverTextColor}
-                        onChange={(e) => onUpdateBtnHoveredTextColor(e.target.value)}
-                        placeholder="FFFFFF"
-                    />
-                </IconField>
+                {renderFullWidthInputElement(
+                    <IconField
+                        iconPosition="left"
+                        className='editorv2-sidebar__form-input-container'
+                    >
+                        <InputIcon className="pi pi-hashtag"> </InputIcon>
+                        <InputText
+                            value={selectedItem?.buttonData?.hoverTextColor}
+                            onChange={(e) => onUpdateBtnHoveredTextColor(e.target.value)}
+                            placeholder="FFFFFF"
+                            className='editorv2-sidebar__form-input'
+                        />
+                    </IconField>
+                )}
                 <div className="editorv2-sidebar__form-label">{"Radius"}</div>
                 <InputNumber
                     value={selectedItem?.buttonData?.borderRadius || 0}
@@ -737,23 +808,42 @@ export const EditorV2Sidebar = ({
 
         return (
             <div className="editorv2-sidebar__3d-form-container">
-                {selectedItem.imageData?.path === null && (
-                    <input
-                        type="file"
-                        accept="image/png, image/gif, image/jpeg"
-                        onChange={(e) => {
-                            if (e.target.files !== null) {
-                                onUploadImage(e.target.files[0])
-                            }
-                        }}
-                    />
+                {/* {selectedItem.imageData?.path === null && (
+                    <div className="editorv2-sidebar__form-label">{"Add file"}</div>
                 )}
-                <div className="editorv2-sidebar__form-label">{"Size"}</div>
-                <InputNumber
-                    value={selectedItem.imageData?.size}
-                    onValueChange={(e) => onUpdateImageSize(e.value)}
-                // className='editorv2-sidebar__form-input-container'
+                {selectedItem.imageData?.path !== null && (
+                    <div className="editorv2-sidebar__form-label">{"Edit file"}</div>
+                )} */}
+                {renderFullWidthInputElement(
+                    <label
+                        htmlFor={"img-upload"}
+                        className="p-button editorv2-sidebar__custom-img-input editorv2-sidebar__form-input"
+                    >
+                        {selectedItem.imageData?.path === null ?
+                            'Add image' :
+                            'Edit image'
+                        }
+                    </label>
+                )}
+                <input
+                    id="img-upload"
+                    type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    onChange={(e) => {
+                        if (e.target.files !== null) {
+                            onUploadImage(e.target.files[0])
+                        }
+                    }}
+                    className="editorv2-sidebar__img-input"
                 />
+                <div className="editorv2-sidebar__form-label">{"Size"}</div>
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem.imageData?.size}
+                        onValueChange={(e) => onUpdateImageSize(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />, true
+                )}
                 <Slider
                     value={selectedItem.imageData?.size}
                     onChange={(e) => onUpdateImageSize(e.value)}
@@ -762,11 +852,13 @@ export const EditorV2Sidebar = ({
                     className='editorv2-sidebar__form-input-slider'
                 />
                 <div className="editorv2-sidebar__form-label">{"Radius"}</div>
-                <InputNumber
-                    value={selectedItem.imageData?.borderRadius}
-                    onValueChange={(e) => onUpdateImageBorderRadius(e.value)}
-                // className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem.imageData?.borderRadius}
+                        onValueChange={(e) => onUpdateImageBorderRadius(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />, true
+                )}
                 <Slider
                     value={selectedItem.imageData?.borderRadius}
                     onChange={(e) => onUpdateImageBorderRadius(e.value)}
@@ -786,11 +878,13 @@ export const EditorV2Sidebar = ({
         return (
             <div className="editorv2-sidebar__3d-form-container">
                 <div className="editorv2-sidebar__form-label">{"Height"}</div>
-                <InputNumber
-                    value={selectedItem.separatorData?.height}
-                    onValueChange={(e) => onUpdateSeparatorSize('height')(e.value)}
-                // className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem.separatorData?.height}
+                        onValueChange={(e) => onUpdateSeparatorSize('height')(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />, true
+                )}
                 <Slider
                     value={selectedItem.separatorData?.height}
                     onChange={(e) => onUpdateSeparatorSize('height')(e.value)}
@@ -799,11 +893,13 @@ export const EditorV2Sidebar = ({
                     className='editorv2-sidebar__form-input-slider'
                 />
                 <div className="editorv2-sidebar__form-label">{"Width"}</div>
-                <InputNumber
-                    value={selectedItem.separatorData?.width}
-                    onValueChange={(e) => onUpdateSeparatorSize('width')(e.value)}
-                // className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem.separatorData?.width}
+                        onValueChange={(e) => onUpdateSeparatorSize('width')(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />, true
+                )}
                 <Slider
                     value={selectedItem.separatorData?.width}
                     onChange={(e) => onUpdateSeparatorSize('width')(e.value)}
@@ -849,11 +945,13 @@ export const EditorV2Sidebar = ({
                     className='editorv2-sidebar__form-input-container'
                 />
                 <div className="editorv2-sidebar__form-label">{"Size"}</div>
-                <InputNumber
-                    value={selectedItem.threeDData?.size}
-                    onValueChange={(e) => onUpdate3dItemSize(e.value)}
-                // className='editorv2-sidebar__form-input-container'
-                />
+                {renderFullWidthInputElement(
+                    <InputNumber
+                        value={selectedItem.threeDData?.size}
+                        onValueChange={(e) => onUpdate3dItemSize(e.value)}
+                        className='editorv2-sidebar__form-input'
+                    />, true
+                )}
                 <Slider
                     value={selectedItem.threeDData?.size}
                     onChange={(e) => onUpdate3dItemSize(e.value)}
@@ -989,6 +1087,12 @@ export const EditorV2Sidebar = ({
                         onClick={() => onAddItem({
                             type: itemType.id,
                             [itemType.defaultItemKey]: itemType.defaultItem,
+                            spacing: {
+                                top: 20,
+                                bottom: 20,
+                                left: 20,
+                                right: 20,
+                            }
                         })}
                     >
                         {itemType.render}
@@ -1004,16 +1108,88 @@ export const EditorV2Sidebar = ({
                         {selectedItem && selectedItem.type === 'button' && renderButtonCustomisation()}
                         {selectedItem && selectedItem.type === 'separator' && renderSeparatorCustomisation()}
                         {selectedItem && selectedItem.type === 'image' && renderImageCustomisation()}
+                        <div
+                            className="editorv2-sidebar__section-toggle-container"
+                            onClick={() => { setIsSpacingOptionDisplayed(!isSpacingOptionDisplayed) }}
+                        >
+                            {`${isSpacingOptionDisplayed ? 'Hide' : 'Show'} spacing settings`}
+                        </div>
+                        {selectedItem && isSpacingOptionDisplayed && (
+                            <div
+                                className="editorv2-sidebar__spacing-options-container"
+                            >
+                                <div className="editorv2-sidebar__form-label">{"Top"}</div>
+                                {renderFullWidthInputElement(
+                                    <InputNumber
+                                        value={selectedItem.spacing?.top}
+                                        onValueChange={(e) => onUpdateSpacing('top')(e.value)}
+                                        className='editorv2-sidebar__form-input'
+                                    />, true
+                                )}
+                                <Slider
+                                    value={selectedItem.spacing?.top}
+                                    onChange={(e) => onUpdateSpacing('top')(e.value)}
+                                    min={0}
+                                    max={100}
+                                    className='editorv2-sidebar__form-input-slider'
+                                />
+                                <div className="editorv2-sidebar__form-label">{"Bottom"}</div>
+                                {renderFullWidthInputElement(
+                                    <InputNumber
+                                        value={selectedItem.spacing?.bottom}
+                                        onValueChange={(e) => onUpdateSpacing('bottom')(e.value)}
+                                        className='editorv2-sidebar__form-input'
+                                    />, true
+                                )}
+                                <Slider
+                                    value={selectedItem.spacing?.bottom}
+                                    onChange={(e) => onUpdateSpacing('bottom')(e.value)}
+                                    min={0}
+                                    max={100}
+                                    className='editorv2-sidebar__form-input-slider'
+                                />
+                                <div className="editorv2-sidebar__form-label">{"Left"}</div>
+                                {renderFullWidthInputElement(
+                                    <InputNumber
+                                        value={selectedItem.spacing?.left}
+                                        onValueChange={(e) => onUpdateSpacing('left')(e.value)}
+                                        className='editorv2-sidebar__form-input'
+                                    />, true
+                                )}
+                                <Slider
+                                    value={selectedItem.spacing?.left}
+                                    onChange={(e) => onUpdateSpacing('left')(e.value)}
+                                    min={0}
+                                    max={100}
+                                    className='editorv2-sidebar__form-input-slider'
+                                />
+                                <div className="editorv2-sidebar__form-label">{"Right"}</div>
+                                {renderFullWidthInputElement(
+                                    <InputNumber
+                                        value={selectedItem.spacing?.right}
+                                        onValueChange={(e) => onUpdateSpacing('right')(e.value)}
+                                        className='editorv2-sidebar__form-input'
+                                    />, true
+                                )}
+                                <Slider
+                                    value={selectedItem.spacing?.right}
+                                    onChange={(e) => onUpdateSpacing('right')(e.value)}
+                                    min={0}
+                                    max={100}
+                                    className='editorv2-sidebar__form-input-slider'
+                                />
+                            </div>
+                        )}
                     </div>
                     {/* <Button
                         label="Close"
                         onClick={() => setSelectedItemIndexPath(null)}
-                        className="editorv2-sidebar__customisatino-close-btn"
+                        className="editorv2-sidebar__customisation-close-btn"
                     /> */}
                     <Button
                         label="Delete"
                         onClick={() => onDeleteItem()}
-                        className="editorv2-sidebar__customisatino-delete-btn"
+                        className="editorv2-sidebar__customisation-delete-btn"
                     />
                 </div>
             )}
