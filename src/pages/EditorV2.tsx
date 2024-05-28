@@ -235,7 +235,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                         className={
                             `editorv2__page-content
                             ${(isSidebarBackgroundSelection || isSidebarItemSelected) ? ' editorv2__page-content--reduced' : ''}
-                            fullpage-wrapper`
+                            `
                         }
                         onClick={onToggleBackgroundCustomisation}
                         style={{

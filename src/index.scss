@@ -498,12 +498,14 @@ body {
     // align-items: center;
     min-height: 100vh;
     // removing width for sidebar and .fullpage-wrapper padding
-    width: calc(100vw - 60px - 80px);
+    // width: calc(100vw - 60px - 80px);
+    width: calc(100vw - 60px);
     overflow-x: hidden;
 
     &--reduced {
       // removing width for sidebar and .fullpage-wrapper padding
-      width: calc(100vw - 60px - 80px - 240px - 40px);
+      // width: calc(100vw - 60px - 80px - 240px - 40px);
+      width: calc(100vw - 60px - 240px - 40px);
       margin-left: calc(60px + 240px + 40px);
     }
   }

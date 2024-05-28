@@ -634,6 +634,7 @@ export const EditorV2Sidebar = ({
                         value={selectedItem?.textData?.size || 26}
                         onValueChange={(e) => onUpdateTextSize(e.value)}
                         className='editorv2-sidebar__form-input'
+                        maxFractionDigits={2}
                     />
                 )}
                 <div className="editorv2-sidebar__form-label">{"Decoration"}</div>
@@ -734,6 +735,7 @@ export const EditorV2Sidebar = ({
                         value={selectedItem?.buttonData?.textSize || 26}
                         onValueChange={(e) => onUpdateBtnTextSize(e.value)}
                         className='editorv2-sidebar__form-input'
+                        maxFractionDigits={2}
                     />
                 )}
                 <div className="editorv2-sidebar__form-label">{"Text decoration"}</div>
