@@ -268,6 +268,14 @@ body {
     margin-bottom: 12px;
     width: 100%;
   }
+
+  &__unpublished-container {
+    padding: 40px;
+
+    p {
+      margin-top: 0;
+    }
+  }
 }
 
 .editor-block {

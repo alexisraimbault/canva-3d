@@ -130,7 +130,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         await push(projectEmailRef, emailData);
     }
 
-    const isPublished = projectData.name &&
+    const isPublished = projectData?.name &&
         projectData.name.length > 0 &&
         projectData.published
 
@@ -162,10 +162,8 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
             {!isPublished && (
                 <div className="project-view__unpublished-container">
                     <p>{"This project is not published yet."}</p>
-                    <br />
                     <p>{"If you are the project owner, you can log in to your account and publish the project."}</p>
-                    <br />
-                    <p>{"If you just published the project, wait a few minutes."}</p>
+                    <p>{"If you just published the project, wait a few minutes or contact support."}</p>
                 </div>
             )}
             <Dialog
