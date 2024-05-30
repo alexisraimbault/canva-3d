@@ -113,7 +113,8 @@ export const EditorV2ItemRenderer = ({
         return (
             <div
                 style={{
-                    fontWeight: itemData?.weight === 'bold' ? 700 : 400,
+                    // fontWeight: itemData?.weight === 'bold' ? 700 : 400,
+                    fontFamily: itemData?.weight === 'bold' ? "visby_heavy" : "visby_regular",
                     fontSize: `${itemData?.size || 2}em`,
                     color: `#${itemData?.color || darkColor}`,
                     maxWidth: `calc(100vw - 20px)`,
@@ -129,7 +130,8 @@ export const EditorV2ItemRenderer = ({
             <button
                 className="editor-v2-item__custom-button-container"
                 style={{
-                    fontWeight: itemData?.textWeight === 'bold' ? 700 : 400,
+                    // fontWeight: itemData?.textWeight === 'bold' ? 700 : 400,
+                    fontFamily: itemData?.textWeight === 'bold' ? "visby_heavy" : "visby_regular",
                     fontSize: `${itemData?.textSize || 2}em`,
                     color: `#${!isItemHovered ?
                         (itemData?.textColor || darkColor) :

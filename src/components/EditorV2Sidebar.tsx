@@ -17,7 +17,7 @@ import { ref, uploadBytes } from "firebase/storage";
 
 
 import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType, ImageType } from "../utils.js/types";
-import { orientationOptions, alignmentOptions, geometries, materials, interactions } from '../utils.js/statics'
+import { orientationOptions, alignmentOptions, geometries, materials, interactions, globalSpecialBachgrounds } from '../utils.js/statics'
 import { accentColor, darkColor, lightColor } from "../utils.js/colors";
 import { storage } from "../utils.js/firebase";
 
@@ -164,6 +164,23 @@ export const EditorV2Sidebar = ({
             newSelectedItem.threeDData.material = { type: e.target.value }
         }
         onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onSpecialbackgroundChange = (e: DropdownChangeEvent) => {
+        if (!project) {
+            return;
+        }
+        const newProject = { ...project }
+        if (!newProject?.globalBgSpecialSettings) {
+            newProject.globalBgSpecialSettings = {
+                type: e.target.value,
+                opacity: 0.5,
+                colors: [],
+            }
+        } else {
+            newProject.globalBgSpecialSettings.type = e.target.value
+        }
+        updateProject(newProject)
     }
 
     const onInteractionChange = (e: DropdownChangeEvent) => {
@@ -1041,6 +1058,14 @@ export const EditorV2Sidebar = ({
                         placeholder="FFFFFF"
                     />
                 </IconField>
+                <div className="editorv2-sidebar__form-label">{"Custom background"}</div>
+                <Dropdown
+                    value={project?.globalBgSpecialSettings?.type || 'none'}
+                    onChange={onSpecialbackgroundChange}
+                    options={globalSpecialBachgrounds}
+                    placeholder="Select a Background"
+                    className='editorv2-sidebar__form-input-container'
+                />
                 {(!project.published) && (
                     <>
                         <div className="editorv2-sidebar__form-label">{"Publish"}</div>

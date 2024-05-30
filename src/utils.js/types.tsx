@@ -103,6 +103,12 @@ export type ItemType = {
     // T extends TextType ? TextType : ContainerType;
 }
 
+export type SpecialBgSettingsType = {
+    type: string,
+    opacity: number,
+    colors: String[];
+} | null
+
 export type ProjectV2Type = {
     createdAt: number,
     name: string,
@@ -113,4 +119,5 @@ export type ProjectV2Type = {
     items: ItemType[],
     globalBgColor: string,
     globalDefaultTextColor: string,
+    globalBgSpecialSettings: SpecialBgSettingsType,
 }

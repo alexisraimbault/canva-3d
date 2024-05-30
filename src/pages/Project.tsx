@@ -9,6 +9,7 @@ import { database } from '../utils.js/firebase';
 import { defaultProject } from '../utils.js/statics';
 import { ProjectV2Type } from "../utils.js/types";
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
+import { BubblesBackground } from '../components/BubblesBackground';
 
 type IProjectProps = {
     projectNameProps?: string;
@@ -138,25 +139,38 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         title: "Early access"
     }
 
+    const renderSpecialBackground = () => {
+        if (projectData?.globalBgSpecialSettings?.type === 'bubbles') {
+            return (
+                <BubblesBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+
+        return
+    }
+
     return (
         <div className='project-view__wrapper'>
             {isPublished && (
                 <div
                     className='project-view__page-content'
-                    style={{
-                        backgroundColor: `#${projectData.globalBgColor}`,
-                    }}
                 >
-                    {projectData?.items?.map((projectItem, projectItemIndex) => {
-                        return (
-                            <EditorV2ItemRenderer
-                                key={`item-${projectItemIndex}`}
-                                item={projectItem}
-                                isLive
-                                toggleEmailPopup={() => setIsEmailGatherPopupVisible(true)}
-                            />
-                        )
-                    })}
+                    <div className="project-view__page-content-inner">
+                        {projectData?.items?.map((projectItem, projectItemIndex) => {
+                            return (
+                                <EditorV2ItemRenderer
+                                    key={`item-${projectItemIndex}`}
+                                    item={projectItem}
+                                    isLive
+                                    toggleEmailPopup={() => setIsEmailGatherPopupVisible(true)}
+                                />
+                            )
+                        })}
+                    </div>
+                    {renderSpecialBackground()}
                 </div>
             )}
             {!isPublished && (

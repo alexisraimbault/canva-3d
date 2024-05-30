@@ -10,6 +10,7 @@ import { ref, push, set, get } from "firebase/database";
 import { LoggedOutDisplay } from '../components/LoggedOutDisplay';
 import { EditorV2Sidebar } from '../components/EditorV2Sidebar';
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
+import { BubblesBackground } from '../components/BubblesBackground';
 
 import { ProjectV2Type, ItemType } from '../utils.js/types';
 import { database } from '../utils.js/firebase';
@@ -212,6 +213,19 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         setSelectedItemIndexPath([-1])
     }
 
+    const renderSpecialBackground = () => {
+        if (projectData?.globalBgSpecialSettings?.type === 'bubbles') {
+            return (
+                <BubblesBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+
+        return
+    }
+
     return (
         <div className='editorv2__wrapper'>
             <SignedOut>
@@ -238,23 +252,24 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                             `
                         }
                         onClick={onToggleBackgroundCustomisation}
-                        style={{
-                            backgroundColor: `#${projectData.globalBgColor}`,
-                        }}
                     >
-                        {projectData?.items?.map((projectItem, projectItemIndex) => {
-                            return (
-                                <EditorV2ItemRenderer
-                                    key={`item-${projectItemIndex}`}
-                                    item={projectItem}
-                                    itemIndexPath={[projectItemIndex]}
-                                    isSelected={selectedItemIndexPath?.length === 1 && selectedItemIndexPath[0] === projectItemIndex}
-                                    onSelectItem={() => setSelectedItemIndexPath([projectItemIndex])}
-                                    setSelectedItemIndexPath={setSelectedItemIndexPath}
-                                    relativeSelectedItemIndexPath={selectedItemIndexPath || []}
-                                />
-                            )
-                        })}
+
+                        <div className="editorv2__page-content-inner">
+                            {projectData?.items?.map((projectItem, projectItemIndex) => {
+                                return (
+                                    <EditorV2ItemRenderer
+                                        key={`item-${projectItemIndex}`}
+                                        item={projectItem}
+                                        itemIndexPath={[projectItemIndex]}
+                                        isSelected={selectedItemIndexPath?.length === 1 && selectedItemIndexPath[0] === projectItemIndex}
+                                        onSelectItem={() => setSelectedItemIndexPath([projectItemIndex])}
+                                        setSelectedItemIndexPath={setSelectedItemIndexPath}
+                                        relativeSelectedItemIndexPath={selectedItemIndexPath || []}
+                                    />
+                                )
+                            })}
+                        </div>
+                        {renderSpecialBackground()}
                     </div>
                 </div>
             </SignedIn>

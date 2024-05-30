@@ -133,6 +133,17 @@ export const interactions = [
     },
 ]
 
+export const globalSpecialBachgrounds = [
+    {
+        label: 'Bubbles',
+        value: 'bubbles',
+    },
+    {
+        label: 'None',
+        value: 'none',
+    },
+]
+
 export const defaultProject: ProjectV2Type = {
     createdAt: Date.now(),
     name: '',
@@ -142,4 +153,9 @@ export const defaultProject: ProjectV2Type = {
     items: [],
     globalBgColor: lightColor,
     globalDefaultTextColor: darkColor,
+    globalBgSpecialSettings: {
+        type: 'none',
+        opacity: 1,
+        colors: [],
+    },
 }
