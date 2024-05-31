@@ -8,7 +8,11 @@ const Callback: React.FC = () => {
     const navigate = useNavigate();
 
     return (
-        <HandleCallback navigate={navigate} afterSignInUrl={'/editor'} onError={(message) => setError(message)}>
+        <HandleCallback
+            navigate={navigate}
+            afterSignInUrl={'/listing'}
+            onError={(message) => setError(message)}
+        >
             <div className="h-screen flex items-center justify-center">
                 {!error ? (
                     <h1 className="text-xl animate-pulse">Authenticating...</h1>

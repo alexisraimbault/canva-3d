@@ -139,6 +139,10 @@ export const globalSpecialBachgrounds = [
         value: 'bubbles',
     },
     {
+        label: 'Network',
+        value: 'network',
+    },
+    {
         label: 'None',
         value: 'none',
     },

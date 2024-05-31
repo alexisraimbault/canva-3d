@@ -20,49 +20,56 @@ export const BubblesBackground = ({
     return (
         <div
             className='complex-background__wrapper'
+            style={{
+                backgroundColor: `#${globalBgColor || '000000'}`,
+            }}
         >
-            <Canvas
-                className='complex-background__canva'
+            <div
+                className='complex-background__inner'
                 style={{
                     opacity: settings?.opacity || 0.5,
                 }}
-                shadows
-                dpr={[1, 2]}
-                gl={{ antialias: false }}
-                camera={{ fov: 50, position: [0, 0, 21] }}
             >
-                <color
-                    attach="background"
-                    args={['#f0f0f0']}
-                />
-                <fog
-                    attach="fog"
-                    args={['red', 20, -5]}
-                />
-                <ambientLight
-                    intensity={1.5}
-                />
-                <pointLight
-                    position={[10, 10, 10]}
-                    intensity={1}
-                    castShadow
-                />
-                <Bubbles />
-                <EffectComposer
-                // disableNormalPass
+                <Canvas
+                    className='complex-background__canva'
+                    style={{
+                        opacity: settings?.opacity || 0.5,
+                    }}
+                    shadows
+                    dpr={[1, 2]}
+                    gl={{ antialias: false }}
+                    camera={{ fov: 50, position: [0, 0, 21] }}
                 >
-                    <N8AO
-                        aoRadius={6}
-                        intensity={2}
-                        color="red"
-                    />
-                    <TiltShift2
-                        blur={0.1}
-                    />
-                </EffectComposer>
-                <color attach="background" args={[`#${globalBgColor}`]} />
-                {/* <Environment preset="city" /> */}
-            </Canvas>
+                    <group>
+                        <fog
+                            attach="fog"
+                            args={['red', 20, -5]}
+                        />
+                        <ambientLight
+                            intensity={1.5}
+                        />
+                        <pointLight
+                            position={[10, 10, 10]}
+                            intensity={1}
+                            castShadow
+                        />
+                        <Bubbles />
+                        <EffectComposer
+                        // disableNormalPass
+                        >
+                            <N8AO
+                                aoRadius={6}
+                                intensity={2}
+                                color="red"
+                            />
+                            <TiltShift2
+                                blur={0.1}
+                            />
+                        </EffectComposer>
+                    </group>
+                    {/* <Environment preset="city" /> */}
+                </Canvas>
+            </div>
         </div>
     );
 }

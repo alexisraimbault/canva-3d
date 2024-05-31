@@ -10,6 +10,7 @@ import { defaultProject } from '../utils.js/statics';
 import { ProjectV2Type } from "../utils.js/types";
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 import { BubblesBackground } from '../components/BubblesBackground';
+import { NeuralNetworkBackground } from '../components/NeuralNetworkBackground';
 
 type IProjectProps = {
     projectNameProps?: string;
@@ -143,6 +144,14 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         if (projectData?.globalBgSpecialSettings?.type === 'bubbles') {
             return (
                 <BubblesBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+        if (projectData?.globalBgSpecialSettings?.type === 'network') {
+            return (
+                <NeuralNetworkBackground
                     settings={projectData?.globalBgSpecialSettings}
                     globalBgColor={projectData.globalBgColor}
                 />

@@ -183,6 +183,25 @@ export const EditorV2Sidebar = ({
         updateProject(newProject)
     }
 
+    const onUpdateSpecialBackgroundOpacity = (newOpacity: Nullable<number | null> | number[]) => {
+        if (!project) {
+            return;
+        }
+        if (Array.isArray(newOpacity)) {
+            return;
+        }
+        if (newOpacity === null || newOpacity === undefined) {
+            return
+        }
+
+        const newProject: ProjectV2Type = { ...project }
+        if (newProject.globalBgSpecialSettings === null) {
+            return
+        }
+        newProject.globalBgSpecialSettings.opacity = newOpacity
+        updateProject(newProject)
+    }
+
     const onInteractionChange = (e: DropdownChangeEvent) => {
         if (!selectedItem) {
             return;
@@ -1066,6 +1085,21 @@ export const EditorV2Sidebar = ({
                     placeholder="Select a Background"
                     className='editorv2-sidebar__form-input-container'
                 />
+                {(project?.globalBgSpecialSettings && (project?.globalBgSpecialSettings?.type || 'none') !== 'none') && (
+                    <>
+                        <div className="editorv2-sidebar__form-label">{"Opacity"}</div>
+                        {renderFullWidthInputElement(
+                            <InputNumber
+                                value={project.globalBgSpecialSettings?.opacity}
+                                onValueChange={(e) => onUpdateSpecialBackgroundOpacity(e.value)}
+                                className='editorv2-sidebar__form-input'
+                                maxFractionDigits={2}
+                                min={0.01}
+                                max={1}
+                            />
+                        )}
+                    </>
+                )}
                 {(!project.published) && (
                     <>
                         <div className="editorv2-sidebar__form-label">{"Publish"}</div>

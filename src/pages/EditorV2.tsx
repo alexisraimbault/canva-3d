@@ -11,6 +11,7 @@ import { LoggedOutDisplay } from '../components/LoggedOutDisplay';
 import { EditorV2Sidebar } from '../components/EditorV2Sidebar';
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 import { BubblesBackground } from '../components/BubblesBackground';
+import { NeuralNetworkBackground } from '../components/NeuralNetworkBackground';
 
 import { ProjectV2Type, ItemType } from '../utils.js/types';
 import { database } from '../utils.js/firebase';
@@ -217,6 +218,14 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         if (projectData?.globalBgSpecialSettings?.type === 'bubbles') {
             return (
                 <BubblesBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+        if (projectData?.globalBgSpecialSettings?.type === 'network') {
+            return (
+                <NeuralNetworkBackground
                     settings={projectData?.globalBgSpecialSettings}
                     globalBgColor={projectData.globalBgColor}
                 />

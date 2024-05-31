@@ -293,7 +293,7 @@ body {
   }
 
   &__wrapper {
-    // position: relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -504,7 +504,7 @@ body {
   &__page-content {
     // cf editorv2-sidebar__inner-btns-container width
     margin-left: 60px;
-    position: relative;
+    // position: relative;
     min-height: 100vh;
     // removing width for sidebar and .fullpage-wrapper padding
     // width: calc(100vw - 60px - 80px);
@@ -516,6 +516,11 @@ body {
       // width: calc(100vw - 60px - 80px - 240px - 40px);
       width: calc(100vw - 60px - 240px - 40px);
       margin-left: calc(60px + 240px + 40px);
+
+      .editorv2__page-content-inner {
+        width: calc(100vw - 60px - 240px - 40px);
+        margin-left: calc(60px + 240px + 40px);
+      }
     }
   }
 
@@ -527,6 +532,10 @@ body {
     left: 0;
     right: 0;
     overflow-x: hidden;
+    min-height: 100vh;
+    // removing width for sidebar and .fullpage-wrapper padding
+    // width: calc(100vw - 60px - 80px);
+    width: calc(100vw - 60px);
     // align-items: center;
   }
 
@@ -707,10 +716,9 @@ body {
     left: 0px;
   }
 
-  &__canva {
-    canvas {
-      background-color: red;
-    }
+  &__inner {
+    width: 100%;
+    height: 100vh;
   }
 }
 
