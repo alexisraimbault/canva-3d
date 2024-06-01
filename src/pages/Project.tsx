@@ -3,14 +3,16 @@ import { useParams } from 'react-router-dom'
 import { ref, push, get } from "firebase/database";
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
 
-import { database } from '../utils.js/firebase';
-import { defaultProject } from '../utils.js/statics';
-import { ProjectV2Type } from "../utils.js/types";
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 import { BubblesBackground } from '../components/BubblesBackground';
 import { NeuralNetworkBackground } from '../components/NeuralNetworkBackground';
+import { GradientButton } from '../components/GradientButton';
+
+import { database } from '../utils.js/firebase';
+import { defaultPopupButton, defaultProject } from '../utils.js/statics';
+import { ButtonType, ProjectV2Type } from "../utils.js/types";
+import { responsiveTextSize } from '../utils.js/functions';
 
 type IProjectProps = {
     projectNameProps?: string;
@@ -25,6 +27,14 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
     const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
     const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
     const [isEmailRegistered, setIsEmailRegistered] = useState(false)
+
+    const [isItemHovered, setIsItemHovered] = useState(false)
+
+    const toggleDetectOver = (isOvered: boolean) => {
+        setIsItemHovered(isOvered)
+    }
+
+    const [clickedButtonData, setClickedButtonData] = useState<ButtonType>(defaultPopupButton)
 
     useEffect(() => {
         fetchInitialData()
@@ -161,6 +171,50 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         return
     }
 
+    const renderPopupButton = () => {
+        const buttonType = clickedButtonData?.type || 'gradient'
+        if (buttonType === 'gradient') {
+            return (
+                <GradientButton
+                    className="project-view__email-popup-btn"
+                    label={clickedButtonData?.content || ''}
+                    onClick={onAddEmail}
+                    gradientColors={[
+                        clickedButtonData?.backgroundColor,
+                        clickedButtonData?.hoverBackgroundColor
+                    ]}
+                    textColor={clickedButtonData?.textColor}
+                    borderRadius={clickedButtonData?.borderRadius || 6}
+                    isBold={clickedButtonData?.textWeight === 'bold'}
+                    fontSize={responsiveTextSize(1.5)}
+                />
+            )
+        }
+        return (
+            <button
+                className="project-view__email-popup-btn"
+                style={{
+                    fontFamily: clickedButtonData?.textWeight === 'bold' ? "visby_heavy" : "visby_regular",
+                    fontSize: `${responsiveTextSize(1.5)}em`,
+                    color: `#${!isItemHovered ?
+                        (clickedButtonData?.textColor) :
+                        (clickedButtonData?.hoverTextColor)
+                        }`,
+                    backgroundColor: `#${!isItemHovered ?
+                        (clickedButtonData?.backgroundColor) :
+                        (clickedButtonData?.hoverBackgroundColor)
+                        }`,
+                    borderRadius: `${clickedButtonData?.borderRadius || 0}px`,
+                }}
+                onMouseEnter={() => toggleDetectOver(true)}
+                onMouseLeave={() => toggleDetectOver(false)}
+                onClick={onAddEmail}
+            >
+                {clickedButtonData?.content || ''}
+            </button>
+        )
+    }
+
     return (
         <div className='project-view__wrapper'>
             {isPublished && (
@@ -175,6 +229,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                                     item={projectItem}
                                     isLive
                                     toggleEmailPopup={() => setIsEmailGatherPopupVisible(true)}
+                                    setClickedButtonData={setClickedButtonData}
                                 />
                             )
                         })}
@@ -210,10 +265,7 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                                 {"Your email is registered, we will contact you shortly !"}
                             </div>
                         )}
-                        <Button
-                            label="Register"
-                            onClick={onAddEmail}
-                        />
+                        {renderPopupButton()}
                     </div>
                 </div>
             </Dialog>

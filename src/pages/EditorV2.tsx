@@ -235,13 +235,22 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         return
     }
 
+    const hasNoSpecialBackground = projectData?.globalBgSpecialSettings?.type || 'none' === 'none'
+
     return (
         <div className='editorv2__wrapper'>
             <SignedOut>
                 <LoggedOutDisplay />
             </SignedOut>
             <SignedIn>
-                <div className="editorv2__inner">
+                <div
+                    className="editorv2__inner"
+                    style={{
+                        ...(hasNoSpecialBackground ? {
+                            backgroundColor: `#${projectData.globalBgColor}`
+                        } : {})
+                    }}
+                >
                     <EditorV2Sidebar
                         onAddItem={addItem}
                         onEditItem={editItem}

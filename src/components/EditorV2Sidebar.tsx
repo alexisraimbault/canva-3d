@@ -15,10 +15,9 @@ import {
 } from "@kobbleio/react";
 import { ref, uploadBytes } from "firebase/storage";
 
-
 import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType, ImageType } from "../utils.js/types";
-import { orientationOptions, alignmentOptions, geometries, materials, interactions, globalSpecialBachgrounds } from '../utils.js/statics'
-import { accentColor, darkColor, lightColor } from "../utils.js/colors";
+import { orientationOptions, alignmentOptions, geometries, materials, interactions, globalSpecialBachgrounds, buttonsTypes } from '../utils.js/statics'
+import { blue, green, white } from "../utils.js/colors";
 import { storage } from "../utils.js/firebase";
 
 type EditorV2SidebarProps = {
@@ -120,14 +119,15 @@ export const EditorV2Sidebar = ({
             <div>{"Btn"}</div>
         ),
         defaultItem: {
+            type: 'gradient',
             content: 'Edit me',
             textSize: 2,
             textWeight: 'bold',
             borderRadius: 0,
-            backgroundColor: lightColor,
-            hoverBackgroundColor: accentColor,
-            textColor: darkColor,
-            hoverTextColor: darkColor,
+            backgroundColor: green,
+            hoverBackgroundColor: blue,
+            textColor: white,
+            hoverTextColor: white,
             action: 'email-popup',
         },
         defaultItemKey: 'buttonData'
@@ -209,6 +209,17 @@ export const EditorV2Sidebar = ({
         const newSelectedItem: ItemType = { ...selectedItem }
         if (newSelectedItem.threeDData) {
             newSelectedItem.threeDData.interaction = { type: e.target.value }
+        }
+        onEditItem(selectedItemIndexPath, newSelectedItem)
+    }
+
+    const onButtonTypeChange = (e: DropdownChangeEvent) => {
+        if (!selectedItem) {
+            return;
+        }
+        const newSelectedItem: ItemType = { ...selectedItem }
+        if (newSelectedItem.buttonData) {
+            newSelectedItem.buttonData.type = e.target.value
         }
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
@@ -712,9 +723,20 @@ export const EditorV2Sidebar = ({
             return
         }
 
+        const buttonType = selectedItem.buttonData?.type || 'gradient'
+        const isGradient = buttonType === 'gradient'
+
         return (
             <div className="editorv2-sidebar__3d-form-container">
-                <div className="editorv2-sidebar__form-label">{"Background color"}</div>
+                <div className="editorv2-sidebar__form-label">{"Type"}</div>
+                <Dropdown
+                    value={buttonType}
+                    onChange={onButtonTypeChange}
+                    options={buttonsTypes}
+                    placeholder="Select a Button"
+                    className='editorv2-sidebar__form-input-container'
+                />
+                <div className="editorv2-sidebar__form-label">{isGradient ? "Gradient start" : "Background color"}</div>
                 <ColorPicker
                     format="hex"
                     value={selectedItem?.buttonData?.backgroundColor}
@@ -735,7 +757,7 @@ export const EditorV2Sidebar = ({
                         />
                     </IconField>
                 )}
-                <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
+                <div className="editorv2-sidebar__form-label">{isGradient ? "Gradient end" : "Hovered"}</div>
                 <ColorPicker
                     format="hex"
                     value={selectedItem?.buttonData?.hoverBackgroundColor}
@@ -805,26 +827,30 @@ export const EditorV2Sidebar = ({
                         />
                     </IconField>
                 )}
-                <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
-                <ColorPicker
-                    format="hex"
-                    value={selectedItem?.buttonData?.hoverTextColor}
-                    onChange={(e) => onUpdateBtnHoveredTextColor(e.value)}
-                    className='editorv2-sidebar__form-input-container'
-                />
-                {renderFullWidthInputElement(
-                    <IconField
-                        iconPosition="left"
-                        className='editorv2-sidebar__form-input-container'
-                    >
-                        <InputIcon className="pi pi-hashtag"> </InputIcon>
-                        <InputText
+                {!isGradient && (
+                    <>
+                        <div className="editorv2-sidebar__form-label">{"Hovered"}</div>
+                        <ColorPicker
+                            format="hex"
                             value={selectedItem?.buttonData?.hoverTextColor}
-                            onChange={(e) => onUpdateBtnHoveredTextColor(e.target.value)}
-                            placeholder="FFFFFF"
-                            className='editorv2-sidebar__form-input'
+                            onChange={(e) => onUpdateBtnHoveredTextColor(e.value)}
+                            className='editorv2-sidebar__form-input-container'
                         />
-                    </IconField>
+                        {renderFullWidthInputElement(
+                            <IconField
+                                iconPosition="left"
+                                className='editorv2-sidebar__form-input-container'
+                            >
+                                <InputIcon className="pi pi-hashtag"> </InputIcon>
+                                <InputText
+                                    value={selectedItem?.buttonData?.hoverTextColor}
+                                    onChange={(e) => onUpdateBtnHoveredTextColor(e.target.value)}
+                                    placeholder="FFFFFF"
+                                    className='editorv2-sidebar__form-input'
+                                />
+                            </IconField>
+                        )}
+                    </>
                 )}
                 <div className="editorv2-sidebar__form-label">{"Radius"}</div>
                 <InputNumber
@@ -1251,6 +1277,10 @@ export const EditorV2Sidebar = ({
                         label="Delete"
                         onClick={() => onDeleteItem()}
                         className="editorv2-sidebar__customisation-delete-btn"
+                    />
+                    <span
+                        className="pi pi-times-circle editorv2-sidebar__close"
+                        onClick={() => setSelectedItemIndexPath(null)}
                     />
                 </div>
             )}

@@ -13,3 +13,6 @@ export const accentColor = "B3FE3B";
 export const secondaryColor1 = "FC1EFF";
 export const secondaryColor2 = "FFFE01";
 export const secondaryColor3 = "01FFFF";
+export const blue = "4589E3";
+export const green = "24FFC0";
+export const white = "ffffff";

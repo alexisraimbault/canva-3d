@@ -1,4 +1,4 @@
-import { darkColor, lightColor } from "./colors"
+import { blue, darkColor, green, lightColor, white } from "./colors"
 import { ProjectV2Type } from "./types"
 
 export const orientationOptions = [
@@ -133,6 +133,17 @@ export const interactions = [
     },
 ]
 
+export const buttonsTypes = [
+    {
+        label: 'Gradient',
+        value: 'gradient',
+    },
+    {
+        label: 'Classic',
+        value: 'classic',
+    },
+]
+
 export const globalSpecialBachgrounds = [
     {
         label: 'Bubbles',
@@ -162,4 +173,17 @@ export const defaultProject: ProjectV2Type = {
         opacity: 1,
         colors: [],
     },
+}
+
+export const defaultPopupButton = {
+    type: 'gradient',
+    content: 'Register',
+    textSize: 2,
+    textWeight: 'bold',
+    borderRadius: 0,
+    backgroundColor: green,
+    hoverBackgroundColor: blue,
+    textColor: white,
+    hoverTextColor: white,
+    action: 'email-popup',
 }

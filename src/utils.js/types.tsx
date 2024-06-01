@@ -53,6 +53,7 @@ export type TextType = {
 }
 
 export type ButtonType = {
+    type: string,
     content: string,
     textSize: number,
     textWeight: string,

@@ -279,6 +279,11 @@ body {
       margin-top: 0;
     }
   }
+
+  &__email-popup-btn {
+    margin-top: 12px;
+    padding: 12px 24px !important;
+  }
 }
 
 .editor-block {
@@ -464,31 +469,16 @@ body {
 
 .custom-button {
   &__btn {
-    color: $darkColor;
     cursor: pointer;
     border: none;
-    font-size: 20px;
-    padding: 16px 32px;
-    background-image: linear-gradient(to bottom left, transparent 50%, $lightColor 50%), linear-gradient($lightColor, $lightColor), linear-gradient($lightColor, $lightColor);
-    background-size: 25px 25px, 100% 100%, 100% 100%;
-    background-position: 100% 0%, -25px 0%, 100% 25px;
-    background-repeat: no-repeat;
+    // width: 220px;
+    padding: 24px 42px;
+    background-size: 200%;
+    transition: 0.4s;
 
-    background-image: linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient(to bottom left, transparent calc(30% - 1px), $darkColor calc(30% - 1px), $darkColor calc(30% + 1px), $lightColor calc(30% + 1px)), linear-gradient($lightColor, $lightColor), linear-gradient($lightColor, $lightColor);
-    background-size: 2px 100%, 2px 100%, 100% 2px, 100% 2px, 25px 25px, 100% 100%, 100% 100%;
-    background-position: 0% 0%, 100% 13px, -13px 0%, 0px 100%, 100% 0%, -25px 0%, 100% 25px;
-  }
-
-  &__btn:hover {
-    color: $lightColor;
-    background-image: linear-gradient(to bottom left, transparent 50%, $darkColor 50%), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor);
-    background-size: 25px 25px, 100% 100%, 100% 100%;
-    background-position: 100% 0%, -25px 0%, 100% 25px;
-    background-repeat: no-repeat;
-
-    background-image: linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor), linear-gradient(to bottom left, transparent calc(30% - 1px), $darkColor calc(30% - 1px), $darkColor calc(30% + 1px), $darkColor calc(30% + 1px)), linear-gradient($darkColor, $darkColor), linear-gradient($darkColor, $darkColor);
-    background-size: 2px 100%, 2px 100%, 100% 2px, 100% 2px, 25px 25px, 100% 100%, 100% 100%;
-    background-position: 0% 0%, 100% 13px, -13px 0%, 0px 100%, 100% 0%, -25px 0%, 100% 25px;
+    &:hover {
+      background-position: right;
+    }
   }
 }
 
@@ -525,6 +515,7 @@ body {
   }
 
   &__page-content-inner {
+    margin-left: 60px;
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -672,6 +663,14 @@ body {
 
   &__img-input {
     display: none;
+  }
+
+  &__close {
+    font-size: 2em;
+    cursor: pointer;
+    position: absolute;
+    top: 12px;
+    right: 12px;
   }
 }
 
