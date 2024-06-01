@@ -216,8 +216,6 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         )
     }
 
-    const gradientColors = ['24FFC0', '4589E3']
-
     return hasLoaded ? (
         <div className='project-view__wrapper'>
             {isPublished && (
