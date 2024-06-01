@@ -108,20 +108,28 @@ const NeuralNetworkCanvaContent = () => {
                 particlePositions[i * 3 + 1],
                 particlePositions[i * 3 + 2]
             )
-                .add(particleData.velocity)
-                .setLength(10)
+            if (particleData && particleData.velocity) {
+                v.add(particleData.velocity)
+            }
+            v.setLength(10)
             particlePositions[i * 3] = v.x
             particlePositions[i * 3 + 1] = v.y
             particlePositions[i * 3 + 2] = v.z
 
             if (particlePositions[i * 3 + 1] < -rHalf || particlePositions[i * 3 + 1] > rHalf)
-                particleData.velocity.y = -particleData.velocity.y
+                if (particleData && particleData.velocity && particleData.velocity.y) {
+                    particleData.velocity.y = -particleData.velocity.y
+                }
 
             if (particlePositions[i * 3] < -rHalf || particlePositions[i * 3] > rHalf)
-                particleData.velocity.x = -particleData.velocity.x
+                if (particleData && particleData.velocity && particleData.velocity.x) {
+                    particleData.velocity.x = -particleData.velocity.x
+                }
 
             if (particlePositions[i * 3 + 2] < -rHalf || particlePositions[i * 3 + 2] > rHalf)
-                particleData.velocity.z = -particleData.velocity.z
+                if (particleData && particleData.velocity && particleData.velocity.z) {
+                    particleData.velocity.z = -particleData.velocity.z
+                }
 
             if (particleData.numConnections >= maxConnections) continue
 
