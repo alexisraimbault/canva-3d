@@ -94,7 +94,11 @@ const NeuralNetworkCanvaContent = () => {
         colorpos = 0
         numConnected = 0
 
-        for (let i = 0; i < particleCount; i++) particlesData[i].numConnections = 0
+        for (let i = 0; i < particleCount; i++) {
+            if (particlesData[i]) {
+                particlesData[i].numConnections = 0
+            }
+        }
 
         for (let i = 0; i < particleCount; i++) {
             const particleData = particlesData[i]
