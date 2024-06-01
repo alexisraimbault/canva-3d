@@ -16,6 +16,7 @@ import { NeuralNetworkBackground } from '../components/NeuralNetworkBackground';
 import { ProjectV2Type, ItemType } from '../utils.js/types';
 import { database } from '../utils.js/firebase';
 import { defaultProject } from '../utils.js/statics';
+import { BlobShinyBackground } from '../components/BlobShinyBackground';
 
 type EditorV2PropsTypes = {};
 
@@ -226,6 +227,14 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         if (projectData?.globalBgSpecialSettings?.type === 'network') {
             return (
                 <NeuralNetworkBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+        if (projectData?.globalBgSpecialSettings?.type === 'planet') {
+            return (
+                <BlobShinyBackground
                     settings={projectData?.globalBgSpecialSettings}
                     globalBgColor={projectData.globalBgColor}
                 />

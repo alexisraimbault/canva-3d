@@ -154,6 +154,10 @@ export const globalSpecialBachgrounds = [
         value: 'network',
     },
     {
+        label: 'Planet',
+        value: 'planet',
+    },
+    {
         label: 'None',
         value: 'none',
     },

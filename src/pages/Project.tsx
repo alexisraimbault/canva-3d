@@ -9,6 +9,7 @@ import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 import { BubblesBackground } from '../components/BubblesBackground';
 import { NeuralNetworkBackground } from '../components/NeuralNetworkBackground';
 import { GradientButton } from '../components/GradientButton';
+import { BlobShinyBackground } from '../components/BlobShinyBackground';
 
 import { database } from '../utils.js/firebase';
 import { defaultPopupButton, defaultProject } from '../utils.js/statics';
@@ -163,6 +164,14 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         if (projectData?.globalBgSpecialSettings?.type === 'network') {
             return (
                 <NeuralNetworkBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+        if (projectData?.globalBgSpecialSettings?.type === 'planet') {
+            return (
+                <BlobShinyBackground
                     settings={projectData?.globalBgSpecialSettings}
                     globalBgColor={projectData.globalBgColor}
                 />
