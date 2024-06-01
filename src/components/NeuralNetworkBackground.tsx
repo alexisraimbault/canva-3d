@@ -95,7 +95,7 @@ const NeuralNetworkCanvaContent = () => {
         numConnected = 0
 
         for (let i = 0; i < particleCount; i++) {
-            if (particlesData[i]) {
+            if (particlesData && particlesData[i]) {
                 particlesData[i].numConnections = 0
             }
         }
@@ -131,11 +131,11 @@ const NeuralNetworkCanvaContent = () => {
                     particleData.velocity.z = -particleData.velocity.z
                 }
 
-            if (particleData.numConnections >= maxConnections) continue
+            if (particleData && particleData.numConnections >= maxConnections) continue
 
             for (let j = i + 1; j < particleCount; j++) {
                 const particleDataB = particlesData[j]
-                if (particleDataB.numConnections >= maxConnections) continue
+                if (particleDataB && particleDataB.numConnections >= maxConnections) continue
 
                 const dx = particlePositions[i * 3] - particlePositions[j * 3]
                 const dy = particlePositions[i * 3 + 1] - particlePositions[j * 3 + 1]
@@ -143,8 +143,12 @@ const NeuralNetworkCanvaContent = () => {
                 const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
 
                 if (dist < minDistance) {
-                    particleData.numConnections++
-                    particleDataB.numConnections++
+                    if (particleData && particleData.numConnections) {
+                        particleData.numConnections++
+                    }
+                    if (particleDataB && particleDataB.numConnections) {
+                        particleDataB.numConnections++
+                    }
 
                     const alpha = 1.0 - dist / minDistance
 

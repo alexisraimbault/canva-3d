@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { ref, push, get } from "firebase/database";
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { EditorV2ItemRenderer } from '../components/EditorV2ItemRenderer';
 import { BubblesBackground } from '../components/BubblesBackground';
@@ -215,7 +216,9 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         )
     }
 
-    return (
+    const gradientColors = ['24FFC0', '4589E3']
+
+    return hasLoaded ? (
         <div className='project-view__wrapper'>
             {isPublished && (
                 <div
@@ -269,6 +272,14 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
                     </div>
                 </div>
             </Dialog>
+        </div>
+    ) : (
+        <div className="loader-container">
+            <ProgressSpinner
+                style={{ width: '500px', height: '500px' }}
+                strokeWidth="4"
+                animationDuration="1s"
+            />
         </div>
     );
 }
