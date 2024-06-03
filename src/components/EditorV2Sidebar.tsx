@@ -1294,10 +1294,9 @@ export const EditorV2Sidebar = ({
                     <div className="editorv2-sidebar__customisation-inner">
                         {renderBackgroundCustomisation()}
                     </div>
-                    <Button
-                        label="Close"
+                    <span
+                        className="pi pi-times-circle editorv2-sidebar__close"
                         onClick={() => setSelectedItemIndexPath(null)}
-                        className="editorv2-sidebar__customisatino-close-btn"
                     />
                 </div>
             )}
