@@ -511,6 +511,13 @@ body {
         width: calc(100vw - 60px - 240px - 40px);
         margin-left: calc(60px + 240px + 40px);
       }
+
+      .complex-background {
+        &__wrapper {
+          width: calc(100vw - 60px - 240px - 40px);
+          margin-left: calc(60px + 240px + 40px);
+        }
+      }
     }
   }
 

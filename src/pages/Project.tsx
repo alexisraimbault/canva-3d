@@ -15,6 +15,7 @@ import { database } from '../utils.js/firebase';
 import { defaultPopupButton, defaultProject } from '../utils.js/statics';
 import { ButtonType, ProjectV2Type } from "../utils.js/types";
 import { responsiveTextSize } from '../utils.js/functions';
+import { BlobBackground } from '../components/BlobBackground';
 
 type IProjectProps = {
     projectNameProps?: string;
@@ -172,6 +173,14 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         if (projectData?.globalBgSpecialSettings?.type === 'planet') {
             return (
                 <BlobShinyBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+        if (projectData?.globalBgSpecialSettings?.type === 'morph-blob') {
+            return (
+                <BlobBackground
                     settings={projectData?.globalBgSpecialSettings}
                     globalBgColor={projectData.globalBgColor}
                 />

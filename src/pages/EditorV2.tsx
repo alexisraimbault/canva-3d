@@ -17,6 +17,7 @@ import { ProjectV2Type, ItemType } from '../utils.js/types';
 import { database } from '../utils.js/firebase';
 import { defaultProject } from '../utils.js/statics';
 import { BlobShinyBackground } from '../components/BlobShinyBackground';
+import { BlobBackground } from '../components/BlobBackground';
 
 type EditorV2PropsTypes = {};
 
@@ -240,6 +241,15 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                 />
             )
         }
+        if (projectData?.globalBgSpecialSettings?.type === 'morph-blob') {
+            return (
+                <BlobBackground
+                    settings={projectData?.globalBgSpecialSettings}
+                    globalBgColor={projectData.globalBgColor}
+                />
+            )
+        }
+
 
         return
     }

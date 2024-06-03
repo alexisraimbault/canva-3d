@@ -200,7 +200,7 @@ const NeuralNetworkCanvaContent = () => {
                     />
                 </bufferGeometry>
                 <pointsMaterial
-                    color={'white'}
+                    color={'#F22EAD'}
                     size={3}
                     blending={AdditiveBlending}
                     transparent={true}
@@ -223,7 +223,7 @@ const NeuralNetworkCanvaContent = () => {
                     />
                 </bufferGeometry>
                 <lineBasicMaterial
-                    color={'white'}
+                    color={'#87F2E7'}
                     vertexColors={true}
                     blending={AdditiveBlending}
                     transparent={true}

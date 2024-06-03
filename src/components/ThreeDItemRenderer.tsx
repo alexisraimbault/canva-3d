@@ -19,9 +19,9 @@ const MeshWrapper = ({
 }: MeshWrapperProps) => {
     const vec = new Vector3()
     const meshRef = useRef<Mesh>(null)
-    const { camera, mouse } = useThree()
+    const { camera } = useThree()
 
-    useFrame(({ clock }) => {
+    useFrame(({ clock, mouse }) => {
         const isMouseInteraction = interaction?.type === 'mouse'
         const isScrollInteraction = interaction?.type === 'scroll'
         const isTimerInteraction = interaction?.type === 'timer'
@@ -44,7 +44,7 @@ const MeshWrapper = ({
         }
 
         if (isMouseInteraction) {
-            camera.position.lerp(vec.set(mouse.x * 4, mouse.y * 4, camera.position.z), 1)
+            camera.position.lerp(vec.set(mouse.x * 2, mouse.y * 2, camera.position.z), 1)
             camera.lookAt(0, 0, 0)
         }
 

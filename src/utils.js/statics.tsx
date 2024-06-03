@@ -158,6 +158,10 @@ export const globalSpecialBachgrounds = [
         value: 'planet',
     },
     {
+        label: 'Morph blob',
+        value: 'morph-blob',
+    },
+    {
         label: 'None',
         value: 'none',
     },

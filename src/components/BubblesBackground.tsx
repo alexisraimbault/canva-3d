@@ -32,19 +32,16 @@ export const BubblesBackground = ({
             >
                 <Canvas
                     className='complex-background__canva'
-                    style={{
-                        opacity: settings?.opacity || 0.5,
-                    }}
                     shadows
                     dpr={[1, 2]}
                     gl={{ antialias: false }}
                     camera={{ fov: 50, position: [0, 0, 21] }}
                 >
                     <group>
-                        <fog
+                        {/* <fog
                             attach="fog"
-                            args={['red', 20, -5]}
-                        />
+                            args={['#EC008C', 20, -5]}
+                        /> */}
                         <ambientLight
                             intensity={1.5}
                         />
@@ -60,7 +57,7 @@ export const BubblesBackground = ({
                             <N8AO
                                 aoRadius={6}
                                 intensity={2}
-                                color="red"
+                                color="#EC008C"
                             />
                             <TiltShift2
                                 blur={0.1}
@@ -103,7 +100,7 @@ const Bubbles = () => {
             <sphereGeometry args={[0.45, 64, 64]} />
             <meshStandardMaterial
                 roughness={1}
-                color="blue"
+                color="#FC6767"
             />
             {particles.map((data, i) => (
                 <Bubble
