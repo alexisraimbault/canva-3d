@@ -254,7 +254,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
         return
     }
 
-    const hasNoSpecialBackground = projectData?.globalBgSpecialSettings?.type || 'none' === 'none'
+    const hasNoSpecialBackground = (projectData?.globalBgSpecialSettings?.type || 'none') === 'none'
 
     return (
         <div className='editorv2__wrapper'>
@@ -264,11 +264,6 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
             <SignedIn>
                 <div
                     className="editorv2__inner"
-                    style={{
-                        ...(hasNoSpecialBackground ? {
-                            backgroundColor: `#${projectData.globalBgColor}`
-                        } : {})
-                    }}
                 >
                     <EditorV2Sidebar
                         onAddItem={addItem}
@@ -291,7 +286,14 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                         onClick={onToggleBackgroundCustomisation}
                     >
 
-                        <div className="editorv2__page-content-inner">
+                        <div
+                            className="editorv2__page-content-inner"
+                            style={{
+                                ...(hasNoSpecialBackground ? {
+                                    backgroundColor: `#${projectData.globalBgColor}`
+                                } : {})
+                            }}
+                        >
                             {projectData?.items?.map((projectItem, projectItemIndex) => {
                                 return (
                                     <EditorV2ItemRenderer

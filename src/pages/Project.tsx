@@ -234,13 +234,22 @@ export const Project = ({ projectNameProps }: IProjectProps) => {
         )
     }
 
+    const hasNoSpecialBackground = (projectData?.globalBgSpecialSettings?.type || 'none') === 'none'
+
     return hasLoaded ? (
         <div className='project-view__wrapper'>
             {isPublished && (
                 <div
                     className='project-view__page-content'
                 >
-                    <div className="project-view__page-content-inner">
+                    <div
+                        className="project-view__page-content-inner"
+                        style={{
+                            ...(hasNoSpecialBackground ? {
+                                backgroundColor: `#${projectData.globalBgColor}`
+                            } : {})
+                        }}
+                    >
                         {projectData?.items?.map((projectItem, projectItemIndex) => {
                             return (
                                 <EditorV2ItemRenderer
