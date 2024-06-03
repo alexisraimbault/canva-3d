@@ -679,6 +679,10 @@ body {
     top: 12px;
     right: 12px;
   }
+
+  &__publish-link {
+    cursor: pointer;
+  }
 }
 
 .editor-v2-item {

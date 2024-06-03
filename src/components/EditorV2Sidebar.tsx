@@ -1155,7 +1155,12 @@ export const EditorV2Sidebar = ({
                 {project.published && (
                     <>
                         <div className="editorv2-sidebar__form-label">{"Published at"}</div>
-                        <div className="editorv2-sidebar__publish-link">
+                        <div
+                            className="editorv2-sidebar__publish-link"
+                            onClick={() => {
+                                window.open(`https://${project.name}.3d-pages.com`, '_blank')?.focus();
+                            }}
+                        >
                             {`${project.name}.3d-pages.com`}
                         </div>
                     </>
