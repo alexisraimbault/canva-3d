@@ -304,6 +304,7 @@ export const EditorV2 = ({ }: EditorV2PropsTypes) => {
                                         onSelectItem={() => setSelectedItemIndexPath([projectItemIndex])}
                                         setSelectedItemIndexPath={setSelectedItemIndexPath}
                                         relativeSelectedItemIndexPath={selectedItemIndexPath || []}
+                                        isAncestorsIndexPathMatching={(selectedItemIndexPath?.length && selectedItemIndexPath?.length >= 1 && selectedItemIndexPath[0] === projectItemIndex) || false}
                                     />
                                 )
                             })}

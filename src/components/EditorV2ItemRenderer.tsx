@@ -17,6 +17,7 @@ interface EditorV2ItemRendererProps {
     itemIndexPath?: number[];
     relativeSelectedItemIndexPath?: number[];
     isSelected?: boolean;
+    isAncestorsIndexPathMatching?: boolean;
     setSelectedItemIndexPath?: (n: number[]) => void;
     setClickedButtonData?: (b: ButtonType) => void;
     isLive?: boolean;
@@ -30,6 +31,7 @@ export const EditorV2ItemRenderer = ({
     setClickedButtonData = () => { },
     relativeSelectedItemIndexPath = [],
     isSelected = false,
+    isAncestorsIndexPathMatching = false,
     itemIndexPath = [],
     isLive = false,
 }: EditorV2ItemRendererProps) => {
@@ -231,10 +233,11 @@ export const EditorV2ItemRenderer = ({
                             onSelectItem={() => setSelectedItemIndexPath(newItemIndexPathPath)}
                             setSelectedItemIndexPath={setSelectedItemIndexPath}
                             relativeSelectedItemIndexPath={newRelativeSelectedItemIndexPath}
-                            isSelected={newRelativeSelectedItemIndexPath?.length === 1 && newRelativeSelectedItemIndexPath[0] === chindIndex}
+                            isSelected={isAncestorsIndexPathMatching && newRelativeSelectedItemIndexPath?.length === 1 && newRelativeSelectedItemIndexPath[0] === chindIndex}
                             isLive={isLive}
                             toggleEmailPopup={toggleEmailPopup}
                             setClickedButtonData={setClickedButtonData}
+                            isAncestorsIndexPathMatching={(newRelativeSelectedItemIndexPath?.length && newRelativeSelectedItemIndexPath?.length >= 1 && newRelativeSelectedItemIndexPath[0] === chindIndex) || false}
                         />
                     )
                 })}
