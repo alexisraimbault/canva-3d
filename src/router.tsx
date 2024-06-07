@@ -5,6 +5,8 @@ import Callback from "./pages/Callback";
 import { Listing } from "./pages/Listing";
 import { Project } from "./pages/Project";
 
+import { BlobMetalBackground } from "./components/BlobMetalBackground";
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -41,5 +43,9 @@ export const router = createBrowserRouter([
     {
         path: "/l/:projectName",
         element: <Project />,
+    },
+    {
+        path: "/test",
+        element: <BlobMetalBackground />,
     }
 ]);

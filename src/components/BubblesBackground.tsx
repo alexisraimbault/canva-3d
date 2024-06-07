@@ -1,7 +1,6 @@
 import { MathUtils } from 'three'
 import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-// import { Instances, Instance, Environment } from '@react-three/drei'
 import { Instances, Instance } from '@react-three/drei'
 import { EffectComposer, N8AO, TiltShift2 } from '@react-three/postprocessing'
 
