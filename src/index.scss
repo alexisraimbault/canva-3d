@@ -458,7 +458,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    // flex-wrap: wrap;
     width: 85vw;
   }
 
@@ -886,6 +886,7 @@ body {
   .homepage {
     &__hero {
       width: 95vw;
+      flex-wrap: wrap;
     }
 
     &__hero-left {
