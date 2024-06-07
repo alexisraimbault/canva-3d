@@ -2,11 +2,11 @@ import { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Vector3 } from 'three'
 
-interface HomepageBlob2PropsTypes {
+interface BlobNetworkPropsTypes {
 };
 
-export const HomepageBlob2 = ({
-}: HomepageBlob2PropsTypes) => {
+export const BlobNetwork = ({
+}: BlobNetworkPropsTypes) => {
 
     return (
         <Canvas

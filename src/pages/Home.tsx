@@ -8,13 +8,23 @@ import {
     // useAuth,
     // useKobble
 } from "@kobbleio/react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ref, push } from "firebase/database";
 // import { Button } from 'primereact/button';
 
 import { Project } from "./Project";
-import { HomepageBlob1 } from "../components/HomepageBlob1";
-import { HomepageBlob2 } from "../components/HomepageBlob2";
+import { BlobPerlin } from "../components/BlobPerlin";
+import { BlobPlanet } from "../components/BlobPlanet";
+import { BlobNetwork } from "../components/BlobNetwork";
+import { BlobPerlinMorph } from "../components/BlobPerlinMorph";
 import { HomepageShape } from "../components/HomepageShape";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
+import { GradientButton } from "../components/GradientButton";
+
+import { responsiveTextSize } from "../utils.js/functions";
+import { database } from '../utils.js/firebase';
 
 const Home = () => {
     // const { user } = useAuth();
@@ -41,16 +51,25 @@ const Home = () => {
     const isProject = !['www', 'canva-3d', '3d-pages', 'localhost'].includes(hostname)
     // console.log({ hostname, isProject })
 
+    const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
+    const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
+    const [isEmailRegistered, setIsEmailRegistered] = useState(false)
+
+    useEffect(() => {
+        setIsEmailRegistered(false)
+
+    }, [emailGatherPopupInputText])
+
     const navigate = useNavigate()
 
     const goToDashboard = () => {
-        navigate(`/listing`)
+        navigate(`/dashboard`)
     }
 
     const renderBlob1 = () => {
         return (
             <div className="homepage__blob-1-container">
-                <HomepageBlob1 />
+                <BlobPerlin />
             </div>
         )
     }
@@ -58,17 +77,47 @@ const Home = () => {
     const renderBlob2 = () => {
         return (
             <div className="homepage__blob-2-container">
-                <HomepageBlob2 />
+                <BlobNetwork />
             </div>
         )
     }
 
-    const renderShape = () => {
+    const renderShape = (n: number) => {
         return (
             <div className="homepage__shape-container">
-                <HomepageShape />
+                {n === 1 && <HomepageShape />}
+                {n === 2 && <BlobPlanet />}
+                {n === 3 && <BlobPerlinMorph />}
             </div>
         )
+    }
+
+    const togglePopup = () => {
+        setIsEmailGatherPopupVisible(true)
+    }
+
+    const onAddEmail = async () => {
+        if (!emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
+            return
+        }
+
+        if (isEmailRegistered) {
+            return
+        }
+
+        const projectEmailRef = ref(database, `emails/homepage/list`)
+        const emailData = {
+            email: emailGatherPopupInputText,
+            createdAt: Date.now(),
+        }
+        await push(projectEmailRef, emailData);
+        setIsEmailRegistered(true)
+    }
+
+    const displayPopup = true
+
+    const defaultPopupTexts = {
+        title: "Early access"
     }
 
     return isProject ? (
@@ -94,13 +143,22 @@ const Home = () => {
                                 {'Experience the future of web design with intuitive tools and stunning 3D elements'}
                             </h2>
                             <SignedOut>
-                                <LoginButton>
+                                {!displayPopup ? (
+                                    <LoginButton>
+                                        <button
+                                            className="homepage__cta"
+                                        >
+                                            {'Get started'}
+                                        </button>
+                                    </LoginButton>
+                                ) : (
                                     <button
                                         className="homepage__cta"
+                                        onClick={togglePopup}
                                     >
                                         {'Get started'}
                                     </button>
-                                </LoginButton>
+                                )}
                             </SignedOut>
                             <SignedIn>
                                 <button
@@ -125,7 +183,7 @@ const Home = () => {
                             <div className="homepage__card__content">
                                 {'Easily drag and drop elements to create stunning pages'}
                             </div>
-                            {renderShape()}
+                            {renderShape(1)}
                         </div>
                         <div className="homepage__card__container">
                             <div className="homepage__card__title">
@@ -134,7 +192,7 @@ const Home = () => {
                             <div className="homepage__card__content">
                                 {'Integrate cutting-edge 3D models seamlessly'}
                             </div>
-                            {renderShape()}
+                            {renderShape(2)}
                         </div>
                         <div className="homepage__card__container">
                             <div className="homepage__card__title">
@@ -143,7 +201,7 @@ const Home = () => {
                             <div className="homepage__card__content">
                                 {'Ensure your site looks great on any device'}
                             </div>
-                            {renderShape()}
+                            {renderShape(3)}
                         </div>
                     </div>
                     {renderBlob2()}
@@ -155,6 +213,39 @@ const Home = () => {
                         <div className="homepage__footer__text">{"By Alexis Raimbault"}</div>
                     </div>
                 </div>
+                <Dialog
+                    header={null}
+                    visible={isEmailGatherPopupVisible}
+                    style={{ width: '600px' }}
+                    onHide={() => setIsEmailGatherPopupVisible(false)}
+                >
+                    <div className='homepage__email-popup-content'>
+                        <div className='homepage__email-popup-inner'>
+                            <div className='homepage__email-popup-title'>{defaultPopupTexts.title}</div>
+                            <div className='homepage__email-popup-text'>
+                                {"Enter your email to receive a private access link"}
+                            </div>
+                            <InputText
+                                value={emailGatherPopupInputText || ''}
+                                onChange={(e) => setEmailGatherPopupInputText(e.target.value)}
+                                placeholder="Email"
+                                className='homepage__email-popup-input'
+                            />
+                            {isEmailRegistered && (
+                                <div className='homepage__email-popup-confirm'>
+                                    {"Your email is registered, we will contact you shortly !"}
+                                </div>
+                            )}
+                            <GradientButton
+                                className="homepage__email-popup-btn"
+                                label={"Register"}
+                                onClick={onAddEmail}
+                                isBold
+                                fontSize={responsiveTextSize(1.5)}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
             </div>
         );
 };

@@ -3,36 +3,16 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { MathUtils } from "three";
 
-import { SpecialBgSettingsType } from '../utils.js/types'
-
-interface BlobBackgroundPropsTypes {
-    settings: SpecialBgSettingsType
-    globalBgColor: string,
+interface BlobPerlinMorphPropsTypes {
 };
 
-export const BlobBackground = ({
-    settings,
-    globalBgColor,
-}: BlobBackgroundPropsTypes) => {
+export const BlobPerlinMorph = ({
+}: BlobPerlinMorphPropsTypes) => {
 
     return (
-        <div
-            className='complex-background__wrapper'
-            style={{
-                backgroundColor: `#${globalBgColor || '000000'}`,
-            }}
-        >
-            <div
-                className='complex-background__inner'
-                style={{
-                    opacity: settings?.opacity || 0.5,
-                }}
-            >
-                <Canvas camera={{ position: [0.0, 0.0, 8.0] }}>
-                    <Blob />
-                </Canvas>
-            </div>
-        </div>
+        <Canvas camera={{ position: [0.0, 0.0, 8.0] }}>
+            <Blob />
+        </Canvas>
     );
 }
 

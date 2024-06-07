@@ -5,11 +5,11 @@ import {
     Color,
 } from "three";
 
-interface HomepageBlob1PropsTypes {
+interface BlobPerlinPropsTypes {
 };
 
-export const HomepageBlob1 = ({
-}: HomepageBlob1PropsTypes) => {
+export const BlobPerlin = ({
+}: BlobPerlinPropsTypes) => {
 
     return (
         <Canvas camera={{ position: [0.0, 0.0, -13.0] }}>

@@ -27,6 +27,7 @@ type emailsListingType = {
         }
     }
 }
+
 export const Listing = ({ }: IListingProps) => {
     const { user } = useAuth();
     const navigate = useNavigate()
