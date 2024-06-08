@@ -6,14 +6,18 @@ import {
 } from "three";
 
 interface BlobPerlinPropsTypes {
+    interaction: string,
 };
 
 export const BlobPerlin = ({
+    interaction,
 }: BlobPerlinPropsTypes) => {
 
     return (
         <Canvas camera={{ position: [0.0, 0.0, -13.0] }}>
-            <Blob />
+            <Blob
+                interaction={interaction}
+            />
             <directionalLight
                 // position={[5, 3, 1]}
                 color='#ffffff'
@@ -37,7 +41,7 @@ export const BlobPerlin = ({
     );
 }
 
-const Blob = () => {
+const Blob = ({ interaction }: { interaction: string }) => {
     const meshRef = useRef<any>(null);
 
 
@@ -45,13 +49,22 @@ const Blob = () => {
         time: { value: 0 }
     };
 
-    useFrame((state) => {
+    useFrame((state, delta) => {
         const { clock } = state;
         const elapsedTime = clock.getElapsedTime()
         gu.time.value = elapsedTime * 0.08;
+
         if (meshRef && meshRef.current) {
-            const { scrollY } = window;
-            meshRef.current.rotation.y = elapsedTime * 0.08 + scrollY / 500
+
+            if (interaction === 'scroll') {
+                const { scrollY } = window;
+                meshRef.current.rotation.y = scrollY / 500
+            }
+            if (interaction === 'timer') {
+                meshRef.current.rotation.y += delta / 5
+            }
+            // const { scrollY } = window;
+            // meshRef.current.rotation.y = elapsedTime * 0.08 + scrollY / 500
             // meshRef.current.rotation.y = elapsedTime * 0.08
 
 

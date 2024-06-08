@@ -33,6 +33,22 @@ export const alignmentOptions = [
 
 export const geometries = [
     {
+        label: 'Network',
+        value: 'network',
+    },
+    {
+        label: 'Planet',
+        value: 'planet',
+    },
+    {
+        label: 'Morph blob 1',
+        value: 'perlin-blob',
+    },
+    {
+        label: 'Morph blob 2',
+        value: 'morph-blob',
+    },
+    {
         label: 'Box',
         value: 'box'
     },
@@ -64,18 +80,18 @@ export const geometries = [
         label: 'TorusKnot',
         value: 'torusKnot'
     },
-    {
-        label: 'Tube',
-        value: 'tube'
-    },
-    {
-        label: 'Edges',
-        value: 'edges'
-    },
-    {
-        label: 'Wireframe',
-        value: 'wireframe'
-    },
+    // {
+    //     label: 'Tube',
+    //     value: 'tube'
+    // },
+    // {
+    //     label: 'Edges',
+    //     value: 'edges'
+    // },
+    // {
+    //     label: 'Wireframe',
+    //     value: 'wireframe'
+    // },
 ]
 
 export const materials = [
@@ -130,6 +146,10 @@ export const interactions = [
     {
         label: 'Scroll',
         value: 'scroll',
+    },
+    {
+        label: 'None',
+        value: 'none',
     },
 ]
 

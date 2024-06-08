@@ -4,6 +4,10 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Environment, useEnvironment } from '@react-three/drei'
 import { Vector3, Mesh } from 'three'
 
+import { BlobPerlin } from "./BlobPerlin";
+import { BlobNetwork } from "./BlobNetwork";
+import { BlobPlanet } from "./BlobPlanet";
+import { BlobPerlinMorph } from "./BlobPerlinMorph";
 
 import { ThreeDItemType, ILight, IGeometry, IMaterial, IInteraction } from "../utils.js/types";
 import { darkColor_10, darkColor_60 } from "../utils.js/colors";
@@ -229,8 +233,46 @@ export const ThreeDItemRenderer = ({
         return materialTypeMap[m?.type]
     }
 
-    const geometryObject = renderGeometry(item?.geometry)
-    const materialObject = renderMaterial(item?.material)
+    const renderSpecialItem = (type: string) => {
+        const specialItemsMap: {
+            [id: string]: ReactNode
+        } = {
+            network: (
+                <BlobNetwork
+                    interaction={item?.interaction?.type || 'none'}
+                />
+            ),
+            planet: (
+                <BlobPlanet
+                    interaction={item?.interaction?.type || 'none'}
+                />
+            ),
+            'morph-blob': (
+                <BlobPerlinMorph
+                    interaction={item?.interaction?.type || 'none'}
+                />
+            ),
+            'perlin-blob': (
+                <BlobPerlin
+                    interaction={item?.interaction?.type || 'none'}
+                />
+            ),
+        }
+
+        return specialItemsMap[type]
+    }
+
+    const specialItems = [
+        'network',
+        'planet',
+        'morph-blob',
+        'perlin-blob'
+    ]
+
+    const isSpecialItem = specialItems.includes(item?.geometry?.type || '')
+
+    const geometryObject = !isSpecialItem ? renderGeometry(item?.geometry) : renderSpecialItem(item?.geometry?.type || '')
+    const materialObject = !isSpecialItem ? renderMaterial(item?.material) : null
 
 
     return (
@@ -241,22 +283,25 @@ export const ThreeDItemRenderer = ({
                 height: `${item?.size || 20}vh`,
             }}
         >
-            <Canvas
-                shadows
-                className="three-d-item-renderer__canvas"
-                camera={{
-                    near: 1,
-                    position: [-2, 2, 2],
-                    aspect: 1,
-                }}
-            >
-                {item?.lights?.map((light, lightIndex) => renderLight(light, lightIndex))}
-                <MeshWrapper
-                    geometryObject={geometryObject}
-                    materialObject={materialObject}
-                    interaction={item?.interaction}
-                />
-            </Canvas>
+            {!isSpecialItem && (
+                <Canvas
+                    shadows
+                    className="three-d-item-renderer__canvas"
+                    camera={{
+                        near: 1,
+                        position: [-2, 2, 2],
+                        aspect: 1,
+                    }}
+                >
+                    {item?.lights?.map((light, lightIndex) => renderLight(light, lightIndex))}
+                    <MeshWrapper
+                        geometryObject={geometryObject}
+                        materialObject={materialObject}
+                        interaction={item?.interaction}
+                    />
+                </Canvas>
+            )}
+            {isSpecialItem && geometryObject}
         </div>
     );
 }

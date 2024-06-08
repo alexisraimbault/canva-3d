@@ -4,22 +4,26 @@ import { useFrame } from "@react-three/fiber";
 import { MathUtils } from "three";
 
 interface BlobPerlinMorphPropsTypes {
+    interaction: string,
 };
 
 export const BlobPerlinMorph = ({
+    interaction,
 }: BlobPerlinMorphPropsTypes) => {
 
     return (
         <Canvas camera={{ position: [0.0, 0.0, 8.0] }}>
-            <Blob />
+            <Blob
+                interaction={interaction}
+            />
         </Canvas>
     );
 }
 
-const Blob = () => {
+const Blob = ({ interaction }: { interaction: string }) => {
     const meshRef = useRef<any>(null);
 
-    useFrame((state) => {
+    useFrame((state, delta) => {
         const { clock } = state;
         if (meshRef.current && meshRef.current.material && meshRef.current.material.uniforms && meshRef.current.material.uniforms.u_time) {
             meshRef.current.material.uniforms.u_time.value =
@@ -30,6 +34,16 @@ const Blob = () => {
                 0.15,
                 0.02
             );
+        }
+
+        if (meshRef && meshRef.current) {
+            if (interaction === 'scroll') {
+                const { scrollY } = window;
+                meshRef.current.rotation.y = scrollY / 500
+            }
+            if (interaction === 'timer') {
+                meshRef.current.rotation.y += delta / 5
+            }
         }
     });
 

@@ -16,7 +16,7 @@ import {
 import { ref, uploadBytes } from "firebase/storage";
 
 import { ThreeDItemType, TextType, ContainerType, ProjectV2Type, ItemType, ButtonType, SeparatorType, ImageType } from "../utils.js/types";
-import { orientationOptions, alignmentOptions, geometries, materials, interactions, globalSpecialBachgrounds, buttonsTypes } from '../utils.js/statics'
+import { orientationOptions, alignmentOptions, geometries, interactions, globalSpecialBachgrounds, buttonsTypes } from '../utils.js/statics'
 import { blue, green, white } from "../utils.js/colors";
 import { storage } from "../utils.js/firebase";
 
@@ -155,16 +155,16 @@ export const EditorV2Sidebar = ({
         onEditItem(selectedItemIndexPath, newSelectedItem)
     }
 
-    const onMaterialChange = (e: DropdownChangeEvent) => {
-        if (!selectedItem) {
-            return;
-        }
-        const newSelectedItem: ItemType = { ...selectedItem }
-        if (newSelectedItem.threeDData) {
-            newSelectedItem.threeDData.material = { type: e.target.value }
-        }
-        onEditItem(selectedItemIndexPath, newSelectedItem)
-    }
+    // const onMaterialChange = (e: DropdownChangeEvent) => {
+    //     if (!selectedItem) {
+    //         return;
+    //     }
+    //     const newSelectedItem: ItemType = { ...selectedItem }
+    //     if (newSelectedItem.threeDData) {
+    //         newSelectedItem.threeDData.material = { type: e.target.value }
+    //     }
+    //     onEditItem(selectedItemIndexPath, newSelectedItem)
+    // }
 
     const onSpecialbackgroundChange = (e: DropdownChangeEvent) => {
         if (!project) {
@@ -992,14 +992,14 @@ export const EditorV2Sidebar = ({
                     placeholder="Select a Geometry"
                     className='editorv2-sidebar__form-input-container'
                 />
-                <div className="editorv2-sidebar__form-label">{"Texture"}</div>
+                {/* <div className="editorv2-sidebar__form-label">{"Texture"}</div>
                 <Dropdown
                     value={selectedItem.threeDData?.material.type}
                     onChange={onMaterialChange}
                     options={materials}
                     placeholder="Select a Material"
                     className='editorv2-sidebar__form-input-container'
-                />
+                /> */}
                 <div className="editorv2-sidebar__form-label">{"Interaction"}</div>
                 <Dropdown
                     value={selectedItem.threeDData?.interaction.type}

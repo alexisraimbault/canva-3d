@@ -3,21 +3,25 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { AdditiveBlending, Vector3 } from 'three'
 
 interface BlobNetworkPropsTypes {
+    interaction: string,
 };
 
 export const BlobNetwork = ({
+    interaction,
 }: BlobNetworkPropsTypes) => {
 
     return (
         <Canvas
             camera={{ position: [0, 0, 17.5] }}
         >
-            <NeuralNetworkCanvaContent />
+            <NeuralNetworkCanvaContent
+                interaction={interaction}
+            />
         </Canvas>
     );
 }
 
-const NeuralNetworkCanvaContent = () => {
+const NeuralNetworkCanvaContent = ({ interaction }: { interaction: string }) => {
     const groupRef = useRef<any>()
     const particlesRef = useRef<any>()
     const linesGeometryRef = useRef<any>()
@@ -69,7 +73,7 @@ const NeuralNetworkCanvaContent = () => {
         particlesRef.current.setDrawRange(0, particleCount)
     })
 
-    useFrame((_, _delta) => {
+    useFrame((_, delta) => {
         vertexpos = 0
         colorpos = 0
         numConnected = 0
@@ -159,9 +163,15 @@ const NeuralNetworkCanvaContent = () => {
 
         particlesRef.current.attributes.position.needsUpdate = true
 
-        const { scrollY } = window;
-        groupRef.current.rotation.y = scrollY / 500
-        // groupRef.current.rotation.y += delta / 5
+        if (groupRef && groupRef.current) {
+            if (interaction === 'scroll') {
+                const { scrollY } = window;
+                groupRef.current.rotation.y = scrollY / 500
+            }
+            if (interaction === 'timer') {
+                groupRef.current.rotation.y += delta / 5
+            }
+        }
     })
 
     return (

@@ -69,7 +69,9 @@ const Home = () => {
     const renderBlob1 = () => {
         return (
             <div className="homepage__blob-1-container">
-                <BlobPerlin />
+                <BlobPerlin
+                    interaction="timer"
+                />
             </div>
         )
     }
@@ -77,7 +79,9 @@ const Home = () => {
     const renderBlob2 = () => {
         return (
             <div className="homepage__blob-2-container">
-                <BlobNetwork />
+                <BlobNetwork
+                    interaction="scroll"
+                />
             </div>
         )
     }
@@ -86,8 +90,16 @@ const Home = () => {
         return (
             <div className="homepage__shape-container">
                 {n === 1 && <HomepageShape />}
-                {n === 2 && <BlobPlanet />}
-                {n === 3 && <BlobPerlinMorph />}
+                {n === 2 && (
+                    <BlobPlanet
+                        interaction="timer"
+                    />
+                )}
+                {n === 3 && (
+                    <BlobPerlinMorph
+                        interaction="timer"
+                    />
+                )}
             </div>
         )
     }
