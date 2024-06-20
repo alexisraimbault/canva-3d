@@ -1,17 +1,19 @@
 import {
     LoginButton,
 } from "@kobbleio/react";
-import { Button } from 'primereact/button';
+
+import { GradientButton } from "./GradientButton";
 
 type ILoggedOutDisplayProps = {};
 
 export const LoggedOutDisplay = ({ }: ILoggedOutDisplayProps) => {
     return (
         <div className="logged-out__wrapper">
-            <div>{"You need to log in to access this page"}</div>
+            <div className="logged-out__text">{"You need to log in to access this page"}</div>
             <LoginButton>
-                <Button
+                <GradientButton
                     label='Login'
+                    className="logged-out__btn"
                 />
             </LoginButton>
         </div>

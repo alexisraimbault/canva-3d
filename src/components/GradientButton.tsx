@@ -8,6 +8,8 @@ type GradientButtonPropsTypes = {
     borderRadius?: number,
     isBold?: boolean,
     fontSize?: number,
+    horizontalPadding?: number,
+    verticalPadding?: number,
 };
 
 export const GradientButton = ({
@@ -19,6 +21,8 @@ export const GradientButton = ({
     borderRadius = 6,
     isBold = true,
     fontSize = 2,
+    horizontalPadding = 42,
+    verticalPadding = 22,
 }: GradientButtonPropsTypes) => {
     return (
         <button
@@ -30,6 +34,7 @@ export const GradientButton = ({
                 backgroundImage: `linear-gradient(to left, #${gradientColors[0]}, #${gradientColors[1]}, #${gradientColors[0]})`,
                 fontFamily: isBold ? "visby_heavy" : "visby_regular",
                 fontSize: `${fontSize}em`,
+                padding: `${verticalPadding}px ${horizontalPadding}px`,
             }}
         >
             {label}

@@ -149,10 +149,10 @@ const Home = () => {
                     <div className="homepage__hero">
                         <div className="homepage__hero-left">
                             <h1 className="homepage__title-1">
-                                {'Create Futuristic Websites'}
+                                {'Build Captivating Websites'}
                             </h1>
                             <h2 className="homepage__subtitle-1">
-                                {'Experience the future of web design with intuitive tools and stunning 3D elements'}
+                                {'Integrate 3D elements for memorable user experiences and stand out from the competition'}
                             </h2>
                             <SignedOut>
                                 {!displayPopup ? (
@@ -186,14 +186,14 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-                <div className="homepage__inner">
+                <div className="homepage__inner homepage__inner-2">
                     <div className="homepage__cards">
                         <div className="homepage__card__container">
                             <div className="homepage__card__title">
-                                {'Intuitive Design Tools'}
+                                {'Fast Loading Speeds'}
                             </div>
                             <div className="homepage__card__content">
-                                {'Easily drag and drop elements to create stunning pages'}
+                                {"Our platform optimizes your website's performance, ensuring quick and smooth access to all your content."}
                             </div>
                             {renderShape(1)}
                         </div>
@@ -202,16 +202,16 @@ const Home = () => {
                                 {'Advanced 3D Elements'}
                             </div>
                             <div className="homepage__card__content">
-                                {'Integrate cutting-edge 3D models seamlessly'}
+                                {'Easily integrate advanced 3D models and animations into your website to create immersive and memorable user experiences that stand out from the competition.'}
                             </div>
                             {renderShape(2)}
                         </div>
                         <div className="homepage__card__container">
                             <div className="homepage__card__title">
-                                {'Responsive Layouts'}
+                                {'Responsive Design'}
                             </div>
                             <div className="homepage__card__content">
-                                {'Ensure your site looks great on any device'}
+                                {"Our responsive design tools automatically adjust your site's layout and elements to provide an optimal viewing experience on desktops, tablets, and smartphones."}
                             </div>
                             {renderShape(3)}
                         </div>
@@ -222,7 +222,7 @@ const Home = () => {
                     <div className="homepage__footer__inner">
                         <div className="homepage__footer__text">{"Made with "}</div>
                         <i className="homepage__footer__icon pi pi-sparkles"></i>
-                        <div className="homepage__footer__text">{"By Alexis Raimbault"}</div>
+                        <div className="homepage__footer__text">{"By Alexis"}</div>
                     </div>
                 </div>
                 <Dialog

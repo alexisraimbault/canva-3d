@@ -6,8 +6,8 @@ import {
 } from "@kobbleio/react";
 import { ref, get } from "firebase/database";
 import { useNavigate } from "react-router-dom";
-import { Button } from 'primereact/button';
 
+import { GradientButton } from "../components/GradientButton";
 import { Card } from "../components/Card";
 import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
 
@@ -83,7 +83,7 @@ export const Listing = ({ }: IListingProps) => {
             </SignedOut>
             <SignedIn>
                 <>
-                    <div className="custom__title">{"Projects"}</div>
+                    <div className="custom__title">{"My Projects"}</div>
                     <div className="listing__projects-container">
                         {projects && Object.keys(projects).map(key => {
 
@@ -113,9 +113,10 @@ export const Listing = ({ }: IListingProps) => {
                             )
                         })}
                     </div>
-                    <Button
+                    <GradientButton
+                        fontSize={1.5}
                         onClick={onAddProject}
-                        label='Add a Project'
+                        label='New Project'
                     />
                 </>
             </SignedIn>
