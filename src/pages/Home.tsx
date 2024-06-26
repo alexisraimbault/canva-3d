@@ -1,17 +1,13 @@
 import {
     LoginButton,
-    // LogoutButton,
-    // PricingLink,
-    // ProfileLink,
     SignedIn,
     SignedOut,
-    // useAuth,
-    // useKobble
 } from "@kobbleio/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ref, push } from "firebase/database";
-// import { Button } from 'primereact/button';
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 
 import { Project } from "./Project";
 import { BlobPerlin } from "../components/BlobPerlin";
@@ -19,37 +15,15 @@ import { BlobPlanet } from "../components/BlobPlanet";
 import { BlobNetwork } from "../components/BlobNetwork";
 import { BlobPerlinMorph } from "../components/BlobPerlinMorph";
 import { HomepageShape } from "../components/HomepageShape";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
 import { GradientButton } from "../components/GradientButton";
 
 import { responsiveTextSize } from "../utils.js/functions";
 import { database } from '../utils.js/firebase';
 
 const Home = () => {
-    // const { user } = useAuth();
-    // const { kobble } = useKobble();
-
-    // const [actionResult, setActionResult] = useState<any>(null);
-
-    // const getAccessToken = async () => {
-    //     const token = await kobble?.getAccessToken();
-    //     setActionResult(token);
-    // };
-
-    // const getIdToken = async () => {
-    //     const token = await kobble?.getIdToken();
-    //     setActionResult(token);
-    // };
-
-    // const getUser = async () => {
-    //     const user = await kobble?.getUser();
-    //     setActionResult(user);
-    // };
 
     const hostname = window.location.hostname.split(".com")[0].split(".")[0]
     const isProject = !['www', 'canva-3d', '3d-pages', 'localhost'].includes(hostname)
-    // console.log({ hostname, isProject })
 
     const [isEmailGatherPopupVisible, setIsEmailGatherPopupVisible] = useState(false)
     const [emailGatherPopupInputText, setEmailGatherPopupInputText] = useState('')
@@ -57,7 +31,6 @@ const Home = () => {
 
     useEffect(() => {
         setIsEmailRegistered(false)
-
     }, [emailGatherPopupInputText])
 
     const navigate = useNavigate()
@@ -126,7 +99,7 @@ const Home = () => {
         setIsEmailRegistered(true)
     }
 
-    const displayPopup = true
+    const displayPopup = false
 
     const defaultPopupTexts = {
         title: "Early access"

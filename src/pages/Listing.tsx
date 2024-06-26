@@ -3,6 +3,9 @@ import {
     SignedIn,
     SignedOut,
     useAuth,
+    LogoutButton,
+    PricingLink,
+    useAccessControl
 } from "@kobbleio/react";
 import { ref, get } from "firebase/database";
 import { useNavigate } from "react-router-dom";
@@ -30,10 +33,16 @@ type emailsListingType = {
 
 export const Listing = ({ }: IListingProps) => {
     const { user } = useAuth();
+    const { quotas } = useAccessControl();
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<projectListingType>({});
     const [emailsData, setEmailsData] = useState<emailsListingType>({});
+
+    const projectKeys = projects ? Object.keys(projects) : []
+    const usedQuotas = projectKeys?.length || 0
+    const quotasTotal = quotas[0]?.limit || 1
+    const canCreate = usedQuotas < quotasTotal
 
     useEffect(() => {
         fetchProjects();
@@ -83,9 +92,37 @@ export const Listing = ({ }: IListingProps) => {
             </SignedOut>
             <SignedIn>
                 <>
-                    <div className="custom__title">{"My Projects"}</div>
+                    <div className="listing__top-wrapper">
+                        <div className="custom__title">{"My Projects"}</div>
+                        <div className="listing__user-display__wrapper">
+                            {user?.pictureUrl && user?.pictureUrl?.length > 0 && (
+                                <img
+                                    width={36}
+                                    src={user.pictureUrl}
+                                    className="listing__user-display__profile-pic"
+                                />
+                            )}
+                            <div className="listing__user-display__texts">
+                                {user?.name && user?.name?.length > 0 && (
+                                    <div className="listing__user-display__name">
+                                        {user?.name}
+                                    </div>
+                                )}
+                                {user?.email && user?.email?.length > 0 && (
+                                    <div className="listing__user-display__email">
+                                        {user?.email}
+                                    </div>
+                                )}
+                            </div>
+                            <LogoutButton>
+                                <a className="listing__user-display__logout-btn">
+                                    {'Logout'}
+                                </a>
+                            </LogoutButton>
+                        </div>
+                    </div>
                     <div className="listing__projects-container">
-                        {projects && Object.keys(projects).map(key => {
+                        {projects && projectKeys.map(key => {
 
                             const projectData = projects[key]
                             const nbBlocks = projectData?.items?.length || 0
@@ -113,11 +150,23 @@ export const Listing = ({ }: IListingProps) => {
                             )
                         })}
                     </div>
-                    <GradientButton
-                        fontSize={1.5}
-                        onClick={onAddProject}
-                        label='New Project'
-                    />
+                    <div className="listing__quotas-display">
+                        {`${usedQuotas}/${quotasTotal} Quotas Used`}
+                    </div>
+                    {canCreate && (
+                        <GradientButton
+                            fontSize={1.5}
+                            onClick={onAddProject}
+                            label='New Project'
+                        />
+                    )}
+                    {!canCreate && (
+                        <PricingLink>
+                            <a className="listing__pricing-btn">
+                                {'Upgrade'}
+                            </a>
+                        </PricingLink>
+                    )}
                 </>
             </SignedIn>
         </div>
