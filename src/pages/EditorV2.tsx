@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import // SignedIn,
-// SignedOut,
-// useAuth
-"@kobbleio/react";
+// import // SignedIn,
+// // SignedOut,
+// // useAuth
+// "@kobbleio/react";
 import { useParams } from "react-router-dom";
 import { ref, push, set, get } from "firebase/database";
 
-import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
+// import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
 import { EditorV2Sidebar } from "../components/EditorV2Sidebar";
 import { EditorV2ItemRenderer } from "../components/EditorV2ItemRenderer";
 import { BubblesBackground } from "../components/BubblesBackground";

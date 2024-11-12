@@ -1,4 +1,4 @@
-import { LoginButton, SignedIn, SignedOut } from "@kobbleio/react";
+// import { LoginButton, SignedIn, SignedOut } from "@kobbleio/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ref, push } from "firebase/database";
@@ -64,9 +64,9 @@ const Home = () => {
     );
   };
 
-  const togglePopup = () => {
-    setIsEmailGatherPopupVisible(true);
-  };
+  //   const togglePopup = () => {
+  //     setIsEmailGatherPopupVisible(true);
+  //   };
 
   const onAddEmail = async () => {
     if (!emailGatherPopupInputText || emailGatherPopupInputText.length <= 0) {
@@ -86,7 +86,7 @@ const Home = () => {
     setIsEmailRegistered(true);
   };
 
-  const displayPopup = false;
+  //   const displayPopup = false;
 
   const defaultPopupTexts = {
     title: "Early access",

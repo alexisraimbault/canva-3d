@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import {
-  SignedIn,
-  SignedOut,
-  useAuth,
-  LogoutButton,
+  //   SignedIn,
+  //   SignedOut,
+  //   useAuth,
+  //   LogoutButton,
   PricingLink,
   useAccessControl,
 } from "@kobbleio/react";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 import { GradientButton } from "../components/GradientButton";
 import { Card } from "../components/Card";
-import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
+// import { LoggedOutDisplay } from "../components/LoggedOutDisplay";
 
 import { database } from "../utils.js/firebase";
 import { ProjectV2Type } from "../utils.js/types";
